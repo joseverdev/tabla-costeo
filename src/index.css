@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  --black: #222831;
+  --gray: #393E46;
+  --blue: #00ADB5;
+  --white: #EEEEEE;
+}
+
+.border-blue{
+  border:solid 1px var(--blue);
+}
+.text-blue{
+  color: var(--blue);
+}
+.color-black{
+  color: var(--black);
+}
+.add-button{
+  background-color: var(--blue);
+  color: var(--black);
+}
+
+.active{
+  transform: translate(0, 0);
+}
+.inactive{
+  display: none;
+}
