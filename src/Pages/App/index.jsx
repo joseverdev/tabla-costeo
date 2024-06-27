@@ -6,17 +6,6 @@ import toggle from "../../Utils/toggle";
 import ContainerList from "../../Components/ContainerList";
 import ListItem from "../../Components/ListItem";
 
-const ingredientsList = [
-  {
-    nombre: "Azucar",
-    unidad_medida: "Libra",
-    unidad_compra: 500,
-    valor_compra: 2000,
-    valor_gramo: 4,
-    cantidad_usada: 1735,
-  },
-];
-
 function App() {
   const [items, setItems] = useState({
     ingredients: [
