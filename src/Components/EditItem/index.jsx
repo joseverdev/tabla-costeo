@@ -1,50 +1,27 @@
-import { useEffect } from "react";
 import toggle from "../../Utils/toggle";
 import "../CreateItem/CreateItem.css";
 
-export default function EditItem({
-  items,
-  itemToEdit,
-  setItems,
-  title,
-  inputNProducts,
-  inputPrice,
-  idToEdit,
-}) {
+export default function EditItem({ items, itemToEdit, setItems }) {
   function editItem(e) {
     e.preventDefault();
     toggle(".edit-ingredient", "active");
-    // console.log(items);
     const newItems = { ...items };
-    // console.log(newItems);
-
-    /*     data.valor_gr_ml =
-      parseInt(data.valor_compra) / parseInt(data.unidad_compra);
-    data.valor_total =
-      parseInt(data.cantidad_usada) * parseInt(data.valor_gr_ml); */
 
     if (itemToEdit.type === "Ingrediente") {
       const data = Object.fromEntries(new FormData(e.target));
-      // console.log(data);
       data.valor_gr_ml = Number(data.valor_compra) / Number(data.unidad_compra);
       data.valor_total = Number(data.cantidad_usada) * Number(data.valor_gr_ml);
       const newItem = { ...itemToEdit, ...data };
       const actualItem = newItems.ingredients.findIndex(
         (item) => item.id === itemToEdit.id
       );
-      // console.log({ actualItem });
-      // console.log({ items });
-      // console.log({ newItem });
 
       newItems.ingredients[actualItem] = newItem;
-
-      // console.log({ newItems });
 
       return setItems(newItems);
     }
     if (itemToEdit.type === "Empaque") {
       const data = Object.fromEntries(new FormData(e.target));
-      // console.log(data);
       data.valor_gr_ml = (
         Number(data.valor_compra) / Number(data.unidad_compra)
       ).toFixed(2);
@@ -55,19 +32,12 @@ export default function EditItem({
       const actualItem = newItems.packages.findIndex(
         (item) => item.id === itemToEdit.id
       );
-      // console.log({ actualItem });
-      // console.log({ items });
-      // console.log({ newItem });
 
       newItems.packages[actualItem] = newItem;
-
-      // console.log({ newItems });
 
       return setItems(newItems);
     }
   }
-
-  // console.log(title);
 
   return (
     <div className="edit-ingredient ">
@@ -93,8 +63,8 @@ export default function EditItem({
             id="nombre"
             name="nombre"
             type="text"
-            // value={itemToEdit?.nombre}
             defaultValue={itemToEdit?.nombre}
+            required
           />
           <p className="text-sm text-red-500 inactive">
             Por favor rellene este campo
@@ -110,8 +80,8 @@ export default function EditItem({
             id="unidad_medida"
             name="unidad_medida"
             type="text"
-            // value={itemToEdit?.unidad_medida}
             defaultValue={itemToEdit?.unidad_medida}
+            required
           />
           <p className="text-sm text-red-500 inactive">
             Por favor rellene este campo
@@ -128,6 +98,7 @@ export default function EditItem({
             name="unidad_compra"
             type="number"
             defaultValue={itemToEdit?.unidad_compra}
+            required
           />
           <p className="text-sm text-red-500 inactive">
             Por favor rellene este campo
@@ -144,6 +115,7 @@ export default function EditItem({
             name="valor_compra"
             type="number"
             defaultValue={itemToEdit?.valor_compra}
+            required
           />
           <p className="text-sm text-red-500 inactive">
             Por favor rellene este campo
@@ -161,16 +133,14 @@ export default function EditItem({
             name="cantidad_usada"
             type="number"
             defaultValue={itemToEdit?.cantidad_usada}
+            required
           />
           <p className="text-sm text-red-500 inactive">
             Por favor rellene este campo
           </p>
         </div>
 
-        <button
-          // onClick={() => toggle(".edit-ingredient", "active")}
-          className="add-button border-blue px-4 py-2 rounded-lg"
-        >
+        <button className="add-button border-blue px-4 py-2 rounded-lg">
           Editar
         </button>
         <button

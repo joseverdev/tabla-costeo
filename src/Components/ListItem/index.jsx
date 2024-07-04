@@ -1,17 +1,25 @@
-import { useEffect } from "react";
 import EditIcon from "../../Icons/EditIcon";
 import TrashIcon from "../../Icons/TrashIcon";
 import "./IngredientItem.css";
 import toggle from "../../Utils/toggle";
-import EditItem from "../EditItem";
 
 export default function ListItem({
   item,
   setItemToEdit,
   deleteItemLocalStorage,
   titleList,
-  setIdToEdit,
 }) {
+  function removeZeros(num) {
+    let number = String(num);
+    let res = number.slice(-3);
+
+    if (res === ".00") {
+      return number.slice(0, -3);
+    }
+
+    return number;
+  }
+
   return (
     <article className="border-blue p-4 rounded-lg item-container mb-4">
       <h3 className="p-1 title">{item ? item.nombre : "Sin titulo"}</h3>
@@ -47,7 +55,7 @@ export default function ListItem({
               <b>Valor total:</b>
             </td>
             <td>
-              <b>$ {item ? item.valor_total : "Sin cantidad"}</b>
+              <b>$ {item ? removeZeros(item.valor_total) : "Sin cantidad"}</b>
             </td>
           </tr>
         </tbody>
@@ -60,6 +68,7 @@ export default function ListItem({
           onClick={() => {
             toggle(".edit-ingredient", "active");
             setItemToEdit(item);
+            // console.log(itemToEdit);
           }}
         >
           <EditIcon className="inline" fill="#06d6a0" />

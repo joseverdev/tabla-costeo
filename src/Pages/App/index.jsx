@@ -240,7 +240,7 @@ function App() {
             <ListItem
               setIdToEdit={setIdToEdit}
               setItemToEdit={setItemToEdit}
-              key={ingredient.nombre}
+              key={ingredient.id}
               item={ingredient}
               titleList={"Ingredientes"}
               editItem={editItem}
@@ -252,7 +252,7 @@ function App() {
           {items.packages?.map((pack) => (
             <ListItem
               setItemToEdit={setItemToEdit}
-              key={pack.nombre}
+              key={pack.id}
               item={pack}
               titleList={"Empaques"}
               editItem={editItem}

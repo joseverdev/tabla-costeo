@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import toggle from "../../Utils/toggle";
 import "./CreateItem.css";
 
@@ -8,9 +9,10 @@ export default function CreateItem({
   inputNProducts,
   inputPrice,
 }) {
+  const pError = useRef(null);
+
   function saveData(e) {
     e.preventDefault();
-    toggle(".create-ingredient", "active");
     const data = Object.fromEntries(new FormData(e.target));
 
     data.valor_gr_ml = (
@@ -23,6 +25,17 @@ export default function CreateItem({
 
     if (title === "Ingrediente") {
       data.type = "Ingrediente";
+
+      const alreadyItem = items.ingredients.find(
+        (item) => item.nombre === data.nombre
+      );
+
+      if (alreadyItem) {
+        return pError.current.classList.remove("inactive");
+      }
+      toggle(".create-ingredient", "active");
+      pError.current.classList.add("inactive");
+
       const newItems = { ...items };
       newItems.ingredients = [...newItems.ingredients, data];
       newItems.results.cost_by_unit = 0;
@@ -40,7 +53,7 @@ export default function CreateItem({
 
     inputNProducts.current.value = 0;
     inputPrice.current.value = 0;
-    //e.target.reset();
+    e.target.reset();
   }
 
   return (
@@ -65,6 +78,9 @@ export default function CreateItem({
             type="text"
             required
           />
+          <p ref={pError} className="text-sm text-red-500 inactive">
+            Ya has agregado este ingrediente
+          </p>
           <p className="text-sm text-red-500 inactive">
             Por favor rellene este campo
           </p>
