@@ -1,6 +1,7 @@
 {
   "name": "tabla-costeo",
   "private": true,
+  "homepage": "https://joselatino.github.io/tabla-costeo",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

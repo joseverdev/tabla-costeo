@@ -2,12 +2,16 @@ import { useEffect } from "react";
 import EditIcon from "../../Icons/EditIcon";
 import TrashIcon from "../../Icons/TrashIcon";
 import "./IngredientItem.css";
+import toggle from "../../Utils/toggle";
+import EditItem from "../EditItem";
 
-export default function ListItem({ item, deleteItemLocalStorage, title }) {
-  function editItem() {
-    console.log("edit");
-  }
-
+export default function ListItem({
+  item,
+  setItemToEdit,
+  deleteItemLocalStorage,
+  titleList,
+  setIdToEdit,
+}) {
   return (
     <article className="border-blue p-4 rounded-lg item-container mb-4">
       <h3 className="p-1 title">{item ? item.nombre : "Sin titulo"}</h3>
@@ -27,21 +31,23 @@ export default function ListItem({ item, deleteItemLocalStorage, title }) {
           </tr>
           <tr>
             <td>
-              {" "}
-              Valor por {title == "Ingredientes" ? "gr/ml" : "empaque/unidad"}:
+              Valor por {titleList == "Ingredientes" ? "gr/ml" : "unidad"}:
             </td>
             <td>$ {item ? item.valor_gr_ml : "Sin valor"}</td>
           </tr>
           <tr>
             <td>Cantidada usada:</td>
-            <td>{item ? item.cantidad_usada : "Sin cantidad"} gr</td>
+            <td>
+              {item ? item.cantidad_usada : "Sin cantidad"}{" "}
+              {titleList === "Ingredientes" ? "gr/ml" : ""}
+            </td>
           </tr>
           <tr>
             <td>
               <b>Valor total:</b>
             </td>
             <td>
-              <b>{item ? item.valor_total : "Sin cantidad"}</b>
+              <b>$ {item ? item.valor_total : "Sin cantidad"}</b>
             </td>
           </tr>
         </tbody>
@@ -50,7 +56,12 @@ export default function ListItem({ item, deleteItemLocalStorage, title }) {
         <button onClick={() => deleteItemLocalStorage(item.nombre)}>
           <TrashIcon fill="#e63946" />
         </button>
-        <button onClick={editItem}>
+        <button
+          onClick={() => {
+            toggle(".edit-ingredient", "active");
+            setItemToEdit(item);
+          }}
+        >
           <EditIcon className="inline" fill="#06d6a0" />
         </button>
       </div>

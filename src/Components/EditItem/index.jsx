@@ -1,58 +1,88 @@
+import { useEffect } from "react";
 import toggle from "../../Utils/toggle";
-import "./CreateItem.css";
+import "../CreateItem/CreateItem.css";
 
-export default function CreateItem({
+export default function EditItem({
   items,
+  itemToEdit,
   setItems,
   title,
   inputNProducts,
   inputPrice,
+  idToEdit,
 }) {
-  function saveData(e) {
+  function editItem(e) {
     e.preventDefault();
-    toggle(".create-ingredient", "active");
-    const data = Object.fromEntries(new FormData(e.target));
+    toggle(".edit-ingredient", "active");
+    // console.log(items);
+    const newItems = { ...items };
+    // console.log(newItems);
 
-    data.valor_gr_ml = (
-      Number(data.valor_compra) / Number(data.unidad_compra)
-    ).toFixed(2);
-    data.valor_total = (
-      Number(data.cantidad_usada) * Number(data.valor_gr_ml)
-    ).toFixed(2);
-    data.id = Date.now();
+    /*     data.valor_gr_ml =
+      parseInt(data.valor_compra) / parseInt(data.unidad_compra);
+    data.valor_total =
+      parseInt(data.cantidad_usada) * parseInt(data.valor_gr_ml); */
 
-    if (title === "Ingrediente") {
-      data.type = "Ingrediente";
-      const newItems = { ...items };
-      newItems.ingredients = [...newItems.ingredients, data];
-      newItems.results.cost_by_unit = 0;
-      newItems.results.utility = 0;
-      setItems(newItems);
-    } else if (title === "Empaque") {
-      data.type = "Empaque";
-      const newItems = { ...items };
-      newItems.packages = [...items.packages, data];
-      newItems.results.cost_by_unit = 0;
-      newItems.results.utility = 0;
+    if (itemToEdit.type === "Ingrediente") {
+      const data = Object.fromEntries(new FormData(e.target));
+      // console.log(data);
+      data.valor_gr_ml = Number(data.valor_compra) / Number(data.unidad_compra);
+      data.valor_total = Number(data.cantidad_usada) * Number(data.valor_gr_ml);
+      const newItem = { ...itemToEdit, ...data };
+      const actualItem = newItems.ingredients.findIndex(
+        (item) => item.id === itemToEdit.id
+      );
+      // console.log({ actualItem });
+      // console.log({ items });
+      // console.log({ newItem });
 
-      setItems(newItems);
+      newItems.ingredients[actualItem] = newItem;
+
+      // console.log({ newItems });
+
+      return setItems(newItems);
     }
+    if (itemToEdit.type === "Empaque") {
+      const data = Object.fromEntries(new FormData(e.target));
+      // console.log(data);
+      data.valor_gr_ml = (
+        Number(data.valor_compra) / Number(data.unidad_compra)
+      ).toFixed(2);
+      data.valor_total = (
+        Number(data.cantidad_usada) * Number(data.valor_gr_ml)
+      ).toFixed(2);
+      const newItem = { ...itemToEdit, ...data };
+      const actualItem = newItems.packages.findIndex(
+        (item) => item.id === itemToEdit.id
+      );
+      // console.log({ actualItem });
+      // console.log({ items });
+      // console.log({ newItem });
 
-    inputNProducts.current.value = 0;
-    inputPrice.current.value = 0;
-    //e.target.reset();
+      newItems.packages[actualItem] = newItem;
+
+      // console.log({ newItems });
+
+      return setItems(newItems);
+    }
   }
 
+  // console.log(title);
+
   return (
-    <div className="create-ingredient ">
+    <div className="edit-ingredient ">
       <form
         onSubmit={(e) => {
-          saveData(e);
+          editItem(e);
         }}
         id="create-form"
         className="relative create-form min-w-42 border-blue rounded p-8 flex flex-col gap-4"
       >
-        <h3 className="text-xl">{title}</h3>
+        <h3 className="text-xl">
+          {itemToEdit?.type === "Ingrediente"
+            ? "Editar Ingrediente"
+            : "Editar Empaque"}
+        </h3>
         <div className="input-container">
           <label htmlFor="nombre" className="text-left block">
             Nombre:
@@ -63,7 +93,8 @@ export default function CreateItem({
             id="nombre"
             name="nombre"
             type="text"
-            required
+            // value={itemToEdit?.nombre}
+            defaultValue={itemToEdit?.nombre}
           />
           <p className="text-sm text-red-500 inactive">
             Por favor rellene este campo
@@ -79,7 +110,8 @@ export default function CreateItem({
             id="unidad_medida"
             name="unidad_medida"
             type="text"
-            required
+            // value={itemToEdit?.unidad_medida}
+            defaultValue={itemToEdit?.unidad_medida}
           />
           <p className="text-sm text-red-500 inactive">
             Por favor rellene este campo
@@ -95,7 +127,7 @@ export default function CreateItem({
             id="unidad_compra"
             name="unidad_compra"
             type="number"
-            required
+            defaultValue={itemToEdit?.unidad_compra}
           />
           <p className="text-sm text-red-500 inactive">
             Por favor rellene este campo
@@ -111,7 +143,7 @@ export default function CreateItem({
             id="valor_compra"
             name="valor_compra"
             type="number"
-            required
+            defaultValue={itemToEdit?.valor_compra}
           />
           <p className="text-sm text-red-500 inactive">
             Por favor rellene este campo
@@ -128,7 +160,7 @@ export default function CreateItem({
             id="cantidad_usada"
             name="cantidad_usada"
             type="number"
-            required
+            defaultValue={itemToEdit?.cantidad_usada}
           />
           <p className="text-sm text-red-500 inactive">
             Por favor rellene este campo
@@ -136,14 +168,14 @@ export default function CreateItem({
         </div>
 
         <button
-          // onClick={() => toggle(".create-ingredient", "active")}
+          // onClick={() => toggle(".edit-ingredient", "active")}
           className="add-button border-blue px-4 py-2 rounded-lg"
         >
-          Agregar
+          Editar
         </button>
         <button
           type="button"
-          onClick={() => toggle(".create-ingredient", "active")}
+          onClick={() => toggle(".edit-ingredient", "active")}
           className="close-btn font-black"
         >
           X

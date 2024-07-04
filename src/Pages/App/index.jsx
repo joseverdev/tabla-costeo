@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import toggle from "../../Utils/toggle";
 import ContainerList from "../../Components/ContainerList";
 import ListItem from "../../Components/ListItem";
+import EditItem from "../../Components/EditItem";
 
 function App() {
   const [items, setItems] = useState({
@@ -45,18 +46,8 @@ function App() {
 
   const [title, setTitle] = useState("");
   const [nProducts, setNProducts] = useState(null);
-
-  /*   const [results, setResults] = useState({
-    ingredients_cost: 0,
-    packages_cost: 0,
-    total_inputs: 0,
-    work_cost: 0,
-    total: 0,
-    units_produced: 0,
-    cost_by_Unit: 0,
-    price_by_unit: 0,
-    utility: 0,
-  }); */
+  const [idToEdit, setIdToEdit] = useState(null);
+  const [itemToEdit, setItemToEdit] = useState(null);
 
   const inputNProducts = useRef();
   const inputPrice = useRef();
@@ -88,7 +79,7 @@ function App() {
 
   const sumAllIngredients = () => {
     const total = items.ingredients.reduce(
-      (acc, cur) => acc + cur.valor_total,
+      (acc, cur) => Number(acc) + Number(cur.valor_total),
       0
     );
 
@@ -102,7 +93,10 @@ function App() {
   };
 
   const sumAllPackages = () => {
-    const total = items.packages.reduce((acc, cur) => acc + cur.valor_total, 0);
+    const total = items.packages.reduce(
+      (acc, cur) => Number(acc) + Number(cur.valor_total),
+      0
+    );
 
     if (items.results.packages_cost != total) {
       const newItems = { ...items };
@@ -156,11 +150,11 @@ function App() {
         return setItems(newItems);
       }
     } else if (items.results.total && e.target.value) {
-      const total = items.results.total / parseInt(e.target.value);
+      const total = items.results.total / Number(e.target.value);
       if (items.results.cost_by_unit != total) {
         const newItems = { ...items };
         newItems.results.cost_by_unit = total;
-        newItems.results.units_produced = parseInt(e.target.value);
+        newItems.results.units_produced = Number(e.target.value);
         setItems(newItems);
       }
       return total;
@@ -183,6 +177,10 @@ function App() {
       }
       return total;
     }
+  }
+
+  function editItem() {
+    console.log("edit");
   }
 
   useEffect(() => {
@@ -229,13 +227,23 @@ function App() {
           inputNProducts={inputNProducts}
           inputPrice={inputPrice}
         />
+        <EditItem
+          itemToEdit={itemToEdit}
+          title={title}
+          setTitle={setTitle}
+          items={items}
+          setItems={setItems}
+        />
         <h1 className="text-2xl font-medium mb-4">Costeo de Productos</h1>
         <ContainerList title="Ingredientes">
           {items.ingredients?.map((ingredient) => (
             <ListItem
+              setIdToEdit={setIdToEdit}
+              setItemToEdit={setItemToEdit}
               key={ingredient.nombre}
               item={ingredient}
-              title={"Ingredientes"}
+              titleList={"Ingredientes"}
+              editItem={editItem}
               deleteItemLocalStorage={deleteIngredientLocalStorage}
             />
           ))}
@@ -243,9 +251,11 @@ function App() {
         <ContainerList title="Empaques">
           {items.packages?.map((pack) => (
             <ListItem
+              setItemToEdit={setItemToEdit}
               key={pack.nombre}
               item={pack}
-              title={"Empaques"}
+              titleList={"Empaques"}
+              editItem={editItem}
               deleteItemLocalStorage={deletePackageLocalStorage}
             />
           ))}
