@@ -128,7 +128,7 @@ export default function EditItem({ items, itemToEdit, setItems }) {
           </label>
           <input
             className="w-52 rounded-sm color-black p-1"
-            placeholder="1735"
+            placeholder="200"
             id="cantidad_usada"
             name="cantidad_usada"
             type="number"

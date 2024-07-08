@@ -56,6 +56,14 @@ export default function CreateItem({
     e.target.reset();
   }
 
+  function validateInput(e) {
+    const input = e.target.value;
+
+    if (!/^\d*\.?\d*$/.test(input)) {
+      e.target.value = input.slice(0, -1); // Remover el último carácter inválido
+    }
+  }
+
   return (
     <div className="create-ingredient ">
       <form
@@ -72,7 +80,9 @@ export default function CreateItem({
           </label>
           <input
             className="w-52 rounded-sm color-black p-1"
-            placeholder="Azucar"
+            placeholder={
+              title === "Ingrediente" ? "Azucar" : "Frascos de vidrio"
+            }
             id="nombre"
             name="nombre"
             type="text"
@@ -91,7 +101,7 @@ export default function CreateItem({
           </label>
           <input
             className="w-52 rounded-sm color-black p-1"
-            placeholder="Libra"
+            placeholder={title === "Ingrediente" ? "Libra" : "Caja"}
             id="unidad_medida"
             name="unidad_medida"
             type="text"
@@ -107,7 +117,7 @@ export default function CreateItem({
           </label>
           <input
             className="w-52 rounded-sm color-black p-1"
-            placeholder="500"
+            placeholder={title === "Ingrediente" ? "500" : "20"}
             id="unidad_compra"
             name="unidad_compra"
             type="number"
@@ -140,10 +150,10 @@ export default function CreateItem({
           </label>
           <input
             className="w-52 rounded-sm color-black p-1"
-            placeholder="1735"
+            placeholder={title === "Ingrediente" ? "200" : "15"}
             id="cantidad_usada"
             name="cantidad_usada"
-            type="number"
+            onChange={validateInput}
             required
           />
           <p className="text-sm text-red-500 inactive">
