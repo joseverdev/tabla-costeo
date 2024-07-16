@@ -34,7 +34,7 @@ export default function EditItem({ items, itemToEdit, setItems }) {
       );
 
       newItems.packages[actualItem] = newItem;
-
+      e.target.reset();
       return setItems(newItems);
     }
   }
