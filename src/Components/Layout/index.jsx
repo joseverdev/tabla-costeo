@@ -1,8 +1,12 @@
 import "./Layout.css";
 
-export default function Layout({ children }) {
+export default function Layout({ children, paddingBottom }) {
   return (
-    <main className=" text-center p-4 min-h-screen dark relative pb-16">
+    <main
+      className={`text-center p-4 min-h-screen dark relative ${
+        paddingBottom ? "" : "pb-16"
+      }`}
+    >
       {children}
     </main>
   );

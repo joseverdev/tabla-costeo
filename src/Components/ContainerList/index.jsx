@@ -8,7 +8,7 @@ export default function ContainerList({ children, title }) {
       <div className="ingredient-container">
         <h2 className="text-xl mb-4">
           <button
-            className="flex m-auto items-center"
+            className="flex m-auto items-center border-none"
             onClick={() => {
               toggle(`.${title}`, "inactive");
               toggle(`.down-icon-${title}`, "rotate");

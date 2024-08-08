@@ -17,6 +17,7 @@ export default function EditItem({ items, itemToEdit, setItems }) {
       );
 
       newItems.ingredients[actualItem] = newItem;
+      e.target.reset();
 
       return setItems(newItems);
     }

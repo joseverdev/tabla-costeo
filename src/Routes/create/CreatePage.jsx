@@ -1,4 +1,3 @@
-import "./App.css";
 import Layout from "../../Components/Layout";
 import CreateItem from "../../Components/CreateItem";
 import { useEffect, useRef, useState } from "react";
@@ -6,9 +5,17 @@ import toggle from "../../Utils/toggle";
 import ContainerList from "../../Components/ContainerList";
 import ListItem from "../../Components/ListItem";
 import EditItem from "../../Components/EditItem";
+import { useLocation, useNavigate } from "react-router-dom";
+// import useLocalStorage from "./useLocalStorage";
 
-function App() {
-  const [items, setItems] = useState({
+function CreatePage() {
+  const location = useLocation();
+  const {
+    state: { nameProduct },
+  } = location;
+
+  const stateItemsInicial = {
+    name: nameProduct,
     ingredients: [
       /*  {
         nombre: "Azucar",
@@ -42,15 +49,17 @@ function App() {
       price_by_unit: 0,
       utility: 0,
     },
-  });
+  };
+
+  const [items, setItems] = useState(stateItemsInicial);
 
   const [title, setTitle] = useState("");
-  const [nProducts, setNProducts] = useState(null);
-  const [idToEdit, setIdToEdit] = useState(null);
   const [itemToEdit, setItemToEdit] = useState(null);
 
   const inputNProducts = useRef();
   const inputPrice = useRef();
+
+  const navigate = useNavigate();
 
   function deleteIngredientLocalStorage(nombre) {
     const newItems = { ...items };
@@ -179,27 +188,68 @@ function App() {
     }
   }
 
+  async function save() {
+    try {
+      let list = await localStorage.getItem("listSave");
+
+      if (!list) {
+        localStorage.setItem("listSave", JSON.stringify([]));
+        list = [];
+      }
+      const parsedList = JSON.parse(list);
+      const itemExist = parsedList.findIndex(
+        (itemList) => itemList.name === items.name
+      );
+
+      if (itemExist === -1) {
+        console.log("el item no existe");
+        console.log({ parsedList });
+
+        items.id = crypto.randomUUID();
+
+        parsedList.push(items);
+      } else {
+        console.log("el item existe");
+        parsedList[itemExist] = {
+          ...parsedList[itemExist],
+          ...items,
+        };
+        console.log(parsedList);
+      }
+
+      localStorage.setItem("listSave", JSON.stringify(parsedList));
+    } catch (err) {
+      console.error("hubo un error en useLocalStorage CreatePage.jsx", err);
+    }
+  }
+
   function editItem() {
     console.log("edit");
   }
 
   useEffect(() => {
-    const itemsLS = localStorage.getItem("items");
-    const parseItems = JSON.parse(itemsLS);
-    if (parseItems) {
-      parseItems.results.cost_by_unit = 0;
-      parseItems.results.utility = 0;
-      setItems(parseItems);
+    let listLs = localStorage.getItem("listSave");
+    if (!listLs) {
+      return console.log("no hay lista");
+    }
+    const parsedList = JSON.parse(listLs);
+    console.log(parsedList);
+
+    const itemsFromList = parsedList.find(
+      (itemList) => itemList.name === nameProduct
+    );
+    console.log(itemsFromList);
+
+    if (itemsFromList) {
+      return setItems(itemsFromList);
     }
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem("items", JSON.stringify(items));
-  }, [items]);
 
   return (
     <>
       <Layout>
+        <h2 className="text-2xl mt-2">{nameProduct}</h2>
+        <hr className="my-4 border-gray-700" />
         <button
           onClick={() => {
             toggle(".create-ingredient", "active");
@@ -219,6 +269,16 @@ function App() {
         >
           Empaque <span className="ml-1 font-black text-2xl">+</span>
         </button>
+        <button
+          onClick={() => {
+            localStorage.setItem("items", JSON.stringify(stateItemsInicial));
+            setItems(stateItemsInicial);
+            navigate("/home");
+          }}
+          className="bg-rose-600 fixed  px-3 py-1 left-0 rounded-r-lg border-none"
+        >
+          Volver
+        </button>
         <CreateItem
           title={title}
           setTitle={setTitle}
@@ -234,11 +294,9 @@ function App() {
           items={items}
           setItems={setItems}
         />
-        <h1 className="text-2xl font-medium mb-4">Costeo de Productos</h1>
         <ContainerList title="Ingredientes">
           {items.ingredients?.map((ingredient) => (
             <ListItem
-              setIdToEdit={setIdToEdit}
               setItemToEdit={setItemToEdit}
               key={ingredient.id}
               item={ingredient}
@@ -325,10 +383,16 @@ function App() {
               </tbody>
             </table>
           </article>
+          <button
+            onClick={() => save()}
+            className="add-button border-blue px-4 py-2 rounded-full"
+          >
+            Guardar Costeo
+          </button>
         </ContainerList>
       </Layout>
     </>
   );
 }
 
-export default App;
+export { CreatePage };

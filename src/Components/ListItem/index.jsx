@@ -10,14 +10,15 @@ export default function ListItem({
   titleList,
 }) {
   function removeZeros(num) {
-    let number = String(num);
-    let res = number.slice(-3);
+    if (!num) {
+      return "no hay numero";
+    } else {
+      const number = Number(num);
+      const numberFormat = number.toFixed(2);
+      const newRes = parseFloat(numberFormat);
 
-    if (res === ".00") {
-      return number.slice(0, -3);
+      return newRes;
     }
-
-    return number;
   }
 
   return (
@@ -61,14 +62,17 @@ export default function ListItem({
         </tbody>
       </table>
       <div className="flex justify-between">
-        <button onClick={() => deleteItemLocalStorage(item.nombre)}>
+        <button
+          className="border-none"
+          onClick={() => deleteItemLocalStorage(item.nombre)}
+        >
           <TrashIcon fill="#e63946" />
         </button>
         <button
+          className="border-none"
           onClick={() => {
             toggle(".edit-ingredient", "active");
             setItemToEdit(item);
-            // console.log(itemToEdit);
           }}
         >
           <EditIcon className="inline" fill="#06d6a0" />

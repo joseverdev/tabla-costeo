@@ -21,8 +21,7 @@ export default function CreateItem({
     data.valor_total = (
       Number(data.cantidad_usada) * Number(data.valor_gr_ml)
     ).toFixed(2);
-    data.id = Date.now();
-
+    data.id = crypto.randomUUID();
     if (title === "Ingrediente") {
       data.type = "Ingrediente";
 
@@ -43,12 +42,23 @@ export default function CreateItem({
       setItems(newItems);
     } else if (title === "Empaque") {
       data.type = "Empaque";
+
+      const alreadyItem = items.packages.find(
+        (item) => item.nombre === data.nombre
+      );
+
+      if (alreadyItem) {
+        return pError.current.classList.remove("inactive");
+      }
+
       const newItems = { ...items };
       newItems.packages = [...items.packages, data];
       newItems.results.cost_by_unit = 0;
       newItems.results.utility = 0;
 
       setItems(newItems);
+      toggle(".create-ingredient", "active");
+      pError.current.classList.add("inactive");
     }
 
     inputNProducts.current.value = 0;
