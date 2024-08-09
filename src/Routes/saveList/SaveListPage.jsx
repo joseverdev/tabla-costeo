@@ -5,6 +5,7 @@ import ArrowRight from "../../Icons/ArrowRight";
 
 import "./SaveList.css";
 import { useNavigate } from "react-router-dom";
+import TrashIcon from "../../Icons/TrashIcon";
 
 function SaveListPage() {
   const navigate = useNavigate();
@@ -14,6 +15,20 @@ function SaveListPage() {
     navigate("/show-save", {
       state: { item },
     });
+  }
+
+  function deleteItemFromLocalStorage(id) {
+    console.log(id);
+    const list = localStorage.getItem("listSave");
+    if (!list) {
+      return console.error(
+        "No se encuentra informacion en el LocalStorage, en SaveListPage"
+      );
+    }
+    const parsedList = JSON.parse(list);
+    const newList = parsedList.filter((item) => item.id !== id);
+    localStorage.setItem("listSave", JSON.stringify(newList));
+    setData(newList);
   }
 
   useEffect(() => {
@@ -37,9 +52,16 @@ function SaveListPage() {
           <ul className="w-full divide-y divide-slate-700 list-container rounded-md py-4">
             {data ? (
               data.map((item) => (
-                <li className=" p-4 " key={item.id}>
+                <li className=" p-4 flex gap-10 text-left" key={item.id}>
+                  <button className="delete border-none">
+                    <TrashIcon
+                      fill="#e63946"
+                      onClick={() => deleteItemFromLocalStorage(item.id)}
+                    />
+                  </button>
+
                   <a
-                    className="flex  items-center "
+                    className="flex  items-center grow"
                     onClick={() => toProduct(item)}
                   >
                     <p className="">{item.name || "sin titulo"}</p>

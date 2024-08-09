@@ -25,7 +25,7 @@ function HomePage() {
                 <p className="text-lg">🖊️</p>
                 <p className="text-black ">
                   Crea la lista de ingredientes que se necesitaron en la
-                  elaboracion de un producto y calculare los costos por ti
+                  elaboración de un producto, y calcularé los costos por ti
                 </p>
               </div>
             </section>
@@ -42,7 +42,10 @@ function HomePage() {
               >
                 Costeos guardados
               </button>
-              <button className="block border p-5 w-full rounded-lg text-lg">
+              <button
+                className="block border p-5 w-full rounded-lg text-lg"
+                onClick={() => navigate("/tutorial")}
+              >
                 ¿ Como usar la app ?
               </button>
             </section>
