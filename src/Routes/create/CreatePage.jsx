@@ -6,6 +6,7 @@ import ContainerList from "../../Components/ContainerList";
 import ListItem from "../../Components/ListItem";
 import EditItem from "../../Components/EditItem";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAnimateButtons } from "../useAnimateButtons";
 // import useLocalStorage from "./useLocalStorage";
 
 function CreatePage() {
@@ -50,6 +51,8 @@ function CreatePage() {
       utility: 0,
     },
   };
+
+  const { animateSaveButton } = useAnimateButtons();
 
   const [items, setItems] = useState(stateItemsInicial);
 
@@ -188,6 +191,20 @@ function CreatePage() {
     }
   }
 
+  /*  function animateSaveButton() {
+    const $btn = document.getElementById("save-btn");
+
+    $btn.classList.add("button-save-animation");
+
+    $btn.addEventListener(
+      "transitionend",
+      () => {
+        $btn.classList.remove("button-save-animation");
+      },
+      { once: false }
+    );
+  } */
+
   async function save() {
     try {
       let list = await localStorage.getItem("listSave");
@@ -218,6 +235,13 @@ function CreatePage() {
       }
 
       localStorage.setItem("listSave", JSON.stringify(parsedList));
+
+      const $successMsg = document.querySelector(".success-msg");
+      $successMsg.classList.add("success-msg-animation");
+
+      setTimeout(() => {
+        $successMsg.classList.remove("success-msg-animation");
+      }, 1000);
     } catch (err) {
       console.error("hubo un error en useLocalStorage CreatePage.jsx", err);
     }
@@ -230,15 +254,13 @@ function CreatePage() {
   useEffect(() => {
     let listLs = localStorage.getItem("listSave");
     if (!listLs) {
-      return console.log("no hay lista");
+      return console.log("no hay lista en  CreatePage.jsx useEffect");
     }
     const parsedList = JSON.parse(listLs);
-    console.log(parsedList);
 
     const itemsFromList = parsedList.find(
       (itemList) => itemList.name === nameProduct
     );
-    console.log(itemsFromList);
 
     if (itemsFromList) {
       return setItems(itemsFromList);
@@ -270,15 +292,39 @@ function CreatePage() {
           Empaque <span className="ml-1 font-black text-2xl">+</span>
         </button>
         <button
-          onClick={() => {
-            localStorage.setItem("items", JSON.stringify(stateItemsInicial));
-            setItems(stateItemsInicial);
-            navigate("/home");
+          onClick={(e) => {
+            const $exitBtn = e.currentTarget;
+
+            $exitBtn.classList.add("exit-bnt-animation");
+
+            $exitBtn.addEventListener(
+              "transitionend",
+              () => {
+                $exitBtn.classList.remove("exit-bnt-animation");
+                console.log("transitionend");
+
+                localStorage.setItem(
+                  "items",
+                  JSON.stringify(stateItemsInicial)
+                );
+                setItems(stateItemsInicial);
+
+                navigate("/home");
+              },
+              { once: false }
+            );
           }}
           className="bg-rose-600 fixed  px-3 py-1 left-0 rounded-r-lg border-none"
         >
           Volver
         </button>
+
+        {
+          <output className="success-msg bg-green-700 px-2 py-1 rounded-md rounded-br-none rounded-tr-none">
+            Guardado con exito !
+          </output>
+        }
+
         <CreateItem
           title={title}
           setTitle={setTitle}
@@ -384,8 +430,12 @@ function CreatePage() {
             </table>
           </article>
           <button
-            onClick={() => save()}
-            className="add-button border-blue px-4 py-2 rounded-full"
+            onClick={() => {
+              animateSaveButton();
+              save();
+            }}
+            id="save-btn"
+            className="main-button add-button border-blue px-4 py-2 rounded-full"
           >
             Guardar Costeo
           </button>

@@ -4,8 +4,10 @@
 
 :root{
   --black: #222831;
+  --black-light: #3a4454;
   --gray: #393E46;
   --blue: #00ADB5;
+  --blue-light: #00f2ff;
   --white: #EEEEEE;
 }
 
@@ -42,4 +44,33 @@ html{
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.main-button{
+  transition: all .2s ease; 
+}
+
+.button-animation {
+  background-color: var(--black-light);
+  
+}
+
+.button-save-animation {
+  background-color: var(--blue-light);
+}
+
+.success-msg{
+  position: fixed;
+  display: none;
+  z-index: 100;
+  right: 0;
+  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+}
+.success-msg-animation {
+  display: block;
+}
+
+.exit-bnt-animation {
+  background-color: rgb(244 63 94);
+  transition: all .2s ease;
 }

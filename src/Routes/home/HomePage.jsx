@@ -2,9 +2,12 @@ import React, { useEffect } from "react";
 import Layout from "../../Components/Layout";
 import "./HomePage.css";
 import { useNavigate } from "react-router-dom";
+import { useAnimateButtons } from "../useAnimateButtons";
 
 function HomePage() {
   const navigate = useNavigate();
+
+  const { navigateToView } = useAnimateButtons();
 
   useEffect(() => {
     const listSave = localStorage.getItem("listSave");
@@ -31,20 +34,20 @@ function HomePage() {
             </section>
             <section>
               <button
-                className="block border p-5 w-full rounded-lg mb-4 text-lg"
-                onClick={() => navigate("/product-name")}
+                className="main-button block border p-5 w-full rounded-lg mb-4 text-lg"
+                onClick={(e) => navigateToView(e, "/product-name")}
               >
                 Crear una nuevo costeo
               </button>
               <button
-                className="block border p-5 w-full rounded-lg mb-4 text-lg"
-                onClick={() => navigate("/save-list")}
+                className="main-button block border p-5 w-full rounded-lg mb-4 text-lg"
+                onClick={(e) => navigateToView(e, "/save-list")}
               >
                 Costeos guardados
               </button>
               <button
-                className="block border p-5 w-full rounded-lg text-lg"
-                onClick={() => navigate("/tutorial")}
+                className="main-button block border p-5 w-full rounded-lg text-lg"
+                onClick={(e) => navigateToView(e, "/tutorial")}
               >
                 ¿ Como usar la app ?
               </button>

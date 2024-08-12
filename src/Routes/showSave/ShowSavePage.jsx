@@ -6,6 +6,7 @@ import ContainerList from "../../Components/ContainerList";
 import ListItem from "../../Components/ListItem";
 import EditItem from "../../Components/EditItem";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAnimateButtons } from "../useAnimateButtons";
 
 function ShowSavePage() {
   const stateItemsInicial = {
@@ -61,6 +62,8 @@ function ShowSavePage() {
   const titleText = item.name || "Sin titulo";
 
   const navigate = useNavigate();
+
+  const { animateSaveButton } = useAnimateButtons();
 
   function deleteIngredientLocalStorage(nombre) {
     const newItems = { ...items };
@@ -213,6 +216,13 @@ function ShowSavePage() {
       } else {
         console.log("el item no existe");
       }
+
+      const $successMsg = document.querySelector(".success-msg");
+      $successMsg.classList.add("success-msg-animation");
+
+      setTimeout(() => {
+        $successMsg.classList.remove("success-msg-animation");
+      }, 1000);
     } catch (err) {
       console.error("hubo un error en useLocalStorage ", err);
     }
@@ -263,15 +273,37 @@ function ShowSavePage() {
           Empaque <span className="ml-1 font-black text-2xl">+</span>
         </button>
         <button
-          onClick={() => {
-            localStorage.setItem("items", JSON.stringify(stateItemsInicial));
-            setItems(stateItemsInicial);
-            navigate("/save-list");
+          onClick={(e) => {
+            const $exitBtn = e.currentTarget;
+
+            $exitBtn.classList.add("exit-bnt-animation");
+
+            $exitBtn.addEventListener(
+              "transitionend",
+              () => {
+                $exitBtn.classList.remove("exit-bnt-animation");
+                console.log("transitionend");
+
+                localStorage.setItem(
+                  "items",
+                  JSON.stringify(stateItemsInicial)
+                );
+                setItems(stateItemsInicial);
+
+                navigate("/save-list");
+              },
+              { once: false }
+            );
           }}
           className="bg-rose-600 fixed  px-3 py-1 left-0 rounded-r-lg border-none"
         >
           Volver
         </button>
+        {
+          <output className="success-msg bg-green-700 px-2 py-1 rounded-md rounded-br-none rounded-tr-none">
+            Guardado con exito !
+          </output>
+        }
         <CreateItem
           title={title}
           setTitle={setTitle}
@@ -377,8 +409,12 @@ function ShowSavePage() {
             </table>
           </article>
           <button
-            onClick={() => save()}
-            className="add-button border-blue px-4 py-2 rounded-full"
+            id="save-btn"
+            onClick={() => {
+              animateSaveButton();
+              save();
+            }}
+            className="main-button add-button border-blue px-4 py-2 rounded-full"
           >
             Guardar Costeo
           </button>

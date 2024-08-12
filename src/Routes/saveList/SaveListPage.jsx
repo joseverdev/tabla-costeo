@@ -6,15 +6,28 @@ import ArrowRight from "../../Icons/ArrowRight";
 import "./SaveList.css";
 import { useNavigate } from "react-router-dom";
 import TrashIcon from "../../Icons/TrashIcon";
+import { useAnimateButtons } from "../useAnimateButtons";
 
 function SaveListPage() {
   const navigate = useNavigate();
   const [data, setData] = useState();
 
-  function toProduct(item) {
-    navigate("/show-save", {
-      state: { item },
-    });
+  const { navigateToView } = useAnimateButtons();
+
+  function toProduct(e, item) {
+    e.preventDefault();
+    const $item = e.currentTarget.parentElement;
+    $item.classList.add("button-animation");
+    $item.addEventListener(
+      "transitionend",
+      () => {
+        $item.classList.remove("button-animation");
+        navigate("/show-save", {
+          state: { item },
+        });
+      },
+      { once: true }
+    );
   }
 
   function deleteItemFromLocalStorage(id) {
@@ -52,7 +65,10 @@ function SaveListPage() {
           <ul className="w-full divide-y divide-slate-700 list-container rounded-md py-4">
             {data ? (
               data.map((item) => (
-                <li className=" p-4 flex gap-10 text-left" key={item.id}>
+                <li
+                  className="main-button p-4 flex gap-10 text-left"
+                  key={item.id}
+                >
                   <button className="delete border-none">
                     <TrashIcon
                       fill="#e63946"
@@ -61,8 +77,8 @@ function SaveListPage() {
                   </button>
 
                   <a
-                    className="flex  items-center grow"
-                    onClick={() => toProduct(item)}
+                    className=" flex  items-center grow"
+                    onClick={(e) => toProduct(e, item)}
                   >
                     <p className="">{item.name || "sin titulo"}</p>
                     <ArrowRight fill="var(--blue)" className="ml-auto w-12" />
@@ -84,8 +100,8 @@ function SaveListPage() {
           </ul>
           <button
             type="button"
-            className="outline-blue-500 w-16  flex justify-center py-2 border  rounded-l-md self-start"
-            onClick={() => navigate("/")}
+            className="main-button outline-blue-500 w-16  flex justify-center py-2 border  rounded-l-md self-start"
+            onClick={(e) => navigateToView(e, "/")}
           >
             <ArrowRight left={"true"} fill="#00adb5" />
           </button>
