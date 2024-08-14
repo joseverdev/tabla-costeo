@@ -1,12 +1,8 @@
 import React, { useEffect } from "react";
-import Layout from "../../Components/Layout";
-import "./HomePage.css";
-import { useNavigate } from "react-router-dom";
+import Layout from "../../Components/Layout/Layout";
 import { useAnimateButtons } from "../useAnimateButtons";
 
 function HomePage() {
-  const navigate = useNavigate();
-
   const { navigateToView } = useAnimateButtons();
 
   useEffect(() => {
@@ -44,12 +40,6 @@ function HomePage() {
                 onClick={(e) => navigateToView(e, "/save-list")}
               >
                 Costeos guardados
-              </button>
-              <button
-                className="main-button block border p-5 w-full rounded-lg text-lg"
-                onClick={(e) => navigateToView(e, "/tutorial")}
-              >
-                ¿ Como usar la app ?
               </button>
             </section>
           </section>

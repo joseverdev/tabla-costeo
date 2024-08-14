@@ -14,7 +14,7 @@ export default function CreateItem({
   function saveData(e) {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target));
-
+    console.log(data);
     data.valor_gr_ml = (
       Number(data.valor_compra) / Number(data.unidad_compra)
     ).toFixed(2);
@@ -105,25 +105,12 @@ export default function CreateItem({
             Por favor rellene este campo
           </p>
         </div>
-        <div className="input-container">
-          <label htmlFor="unidad_medida" className="text-left block">
-            Unidad de medida:
-          </label>
-          <input
-            className="w-52 rounded-sm color-black p-1"
-            placeholder={title === "Ingrediente" ? "Libra" : "Caja"}
-            id="unidad_medida"
-            name="unidad_medida"
-            type="text"
-            required
-          />
-          <p className="text-sm text-red-500 inactive">
-            Por favor rellene este campo
-          </p>
-        </div>
+
         <div className="input-container">
           <label htmlFor="unidad_compra" className="text-left block">
-            Unidad de compra:
+            {title === "Ingrediente"
+              ? "Compra en gr/ml:"
+              : "Compra en unidades:"}
           </label>
           <input
             className="w-52 rounded-sm color-black p-1"
@@ -139,7 +126,7 @@ export default function CreateItem({
         </div>
         <div className="input-container">
           <label htmlFor="valor_compra" className="text-left block">
-            Valor de compra:
+            Precio:
           </label>
           <input
             className="w-52 rounded-sm color-black p-1"

@@ -5,7 +5,6 @@ import { CreatePage } from "./create/CreatePage";
 import { ProductNamePage } from "./productName/ProductNamePage";
 import { SaveListPage } from "./saveList/SaveListPage";
 import { ShowSavePage } from "./showSave/ShowSavePage";
-import { TutorialPage } from "./tutorial/TutorialPage";
 
 function App() {
   return (
@@ -18,7 +17,6 @@ function App() {
           <Route path="/product-name" element={<ProductNamePage />} />
           <Route path="/save-list" element={<SaveListPage />} />
           <Route path="/show-save" element={<ShowSavePage />} />
-          <Route path="/tutorial" element={<TutorialPage />} />
         </Routes>
       </HashRouter>
     </>

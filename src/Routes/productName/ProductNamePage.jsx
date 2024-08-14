@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../Components/Layout";
+import React, { useState } from "react";
+import Layout from "../../Components/Layout/Layout";
 import ArrowRight from "../../Icons/ArrowRight";
 import { useNavigate } from "react-router-dom";
 import { useAnimateButtons } from "../useAnimateButtons";
@@ -12,8 +12,6 @@ function ProductNamePage() {
     const name = e.target.nameProduct.value;
 
     const $submitBtn = e.target.querySelector("#submit-btn");
-
-    console.log(name);
 
     $submitBtn.classList.add("button-animation");
     $submitBtn.addEventListener(
@@ -35,8 +33,6 @@ function ProductNamePage() {
 
           const item = parsedList.some((item) => item.name === name);
 
-          console.log("exite el item? ", item);
-
           if (!item) {
             navigate("/create", {
               state: { nameProduct: name },
@@ -50,8 +46,6 @@ function ProductNamePage() {
 
             document.querySelector(".error").classList.remove("inactive");
           }
-
-          console.log(parsedList);
         }
       },
       { once: true }

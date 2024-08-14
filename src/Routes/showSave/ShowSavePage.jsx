@@ -1,10 +1,10 @@
-import Layout from "../../Components/Layout";
-import CreateItem from "../../Components/CreateItem";
+import Layout from "../../Components/Layout/Layout";
+import CreateItem from "../../Components/CreateItem/CreateItem";
 import { useEffect, useRef, useState } from "react";
 import toggle from "../../Utils/toggle";
-import ContainerList from "../../Components/ContainerList";
+import ContainerList from "../../Components/ContainerList/ContainerList";
 import ListItem from "../../Components/ListItem";
-import EditItem from "../../Components/EditItem";
+import EditItem from "../../Components/EditItem/EditItem";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAnimateButtons } from "../useAnimateButtons";
 

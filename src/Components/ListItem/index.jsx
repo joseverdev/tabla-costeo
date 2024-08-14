@@ -27,20 +27,16 @@ export default function ListItem({
       <table className="w-full mb-2">
         <tbody>
           <tr>
-            <td>Unidad de medida:</td>
-            <td>{item ? item.unidad_medida : "Sin unidad"}</td>
-          </tr>
-          <tr>
-            <td>Unidad de compra:</td>
+            <td>Compra en gr/ml:</td>
             <td>{item ? item.unidad_compra : "Sin"} gr</td>
           </tr>
           <tr>
-            <td>Valor de compra:</td>
+            <td>Precio:</td>
             <td>$ {item ? item.valor_compra : "Sin valor"}</td>
           </tr>
           <tr>
             <td>
-              Valor por {titleList == "Ingredientes" ? "gr/ml" : "unidad"}:
+              Precio por {titleList == "Ingredientes" ? "gr/ml" : "unidad"}:
             </td>
             <td>$ {item ? item.valor_gr_ml : "Sin valor"}</td>
           </tr>

@@ -1,13 +1,12 @@
-import Layout from "../../Components/Layout";
-import CreateItem from "../../Components/CreateItem";
+import Layout from "../../Components/Layout/Layout";
+import CreateItem from "../../Components/CreateItem/CreateItem";
 import { useEffect, useRef, useState } from "react";
 import toggle from "../../Utils/toggle";
-import ContainerList from "../../Components/ContainerList";
+import ContainerList from "../../Components/ContainerList/ContainerList";
 import ListItem from "../../Components/ListItem";
-import EditItem from "../../Components/EditItem";
+import EditItem from "../../Components/EditItem/EditItem";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAnimateButtons } from "../useAnimateButtons";
-// import useLocalStorage from "./useLocalStorage";
 
 function CreatePage() {
   const location = useLocation();
@@ -191,20 +190,6 @@ function CreatePage() {
     }
   }
 
-  /*  function animateSaveButton() {
-    const $btn = document.getElementById("save-btn");
-
-    $btn.classList.add("button-save-animation");
-
-    $btn.addEventListener(
-      "transitionend",
-      () => {
-        $btn.classList.remove("button-save-animation");
-      },
-      { once: false }
-    );
-  } */
-
   async function save() {
     try {
       let list = await localStorage.getItem("listSave");
@@ -245,10 +230,6 @@ function CreatePage() {
     } catch (err) {
       console.error("hubo un error en useLocalStorage CreatePage.jsx", err);
     }
-  }
-
-  function editItem() {
-    console.log("edit");
   }
 
   useEffect(() => {
@@ -301,8 +282,6 @@ function CreatePage() {
               "transitionend",
               () => {
                 $exitBtn.classList.remove("exit-bnt-animation");
-                console.log("transitionend");
-
                 localStorage.setItem(
                   "items",
                   JSON.stringify(stateItemsInicial)
@@ -347,7 +326,6 @@ function CreatePage() {
               key={ingredient.id}
               item={ingredient}
               titleList={"Ingredientes"}
-              editItem={editItem}
               deleteItemLocalStorage={deleteIngredientLocalStorage}
             />
           ))}
@@ -359,7 +337,6 @@ function CreatePage() {
               key={pack.id}
               item={pack}
               titleList={"Empaques"}
-              editItem={editItem}
               deleteItemLocalStorage={deletePackageLocalStorage}
             />
           ))}
@@ -390,7 +367,9 @@ function CreatePage() {
                 </tr>
                 <tr>
                   <td>
-                    <label htmlFor="num-products">Unidades producidas:</label>
+                    <label htmlFor="num-products">
+                      ¿Cuantas unidades salieron?
+                    </label>
                   </td>
                   <td>
                     <input
@@ -409,7 +388,7 @@ function CreatePage() {
                 </tr>
                 <tr>
                   <td>
-                    <label htmlFor="price">Precio por unidad:</label>
+                    <label htmlFor="price">¿Que precio pondras?</label>
                   </td>
                   <td>
                     <input
