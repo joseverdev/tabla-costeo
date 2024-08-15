@@ -33,7 +33,6 @@ button{
 }
 .modal-show-confirmation{
   background-color: var(--black);
-  /* box-shadow: 0px 0px 25px 3px rgb(60, 60, 60); */
 }
 
 .cancel-btn{
@@ -41,5 +40,10 @@ button{
   transition: all 0.2s ease;
 }
 .delete-confirmation-btn{
+  background-color: rgb(187, 23, 64);
+  transition: all 0.2s ease;
+}
+.delete-confirmation-btn-animation{
+  background-color: rgb(233, 71, 111);
   transition: all 0.2s ease;
 }

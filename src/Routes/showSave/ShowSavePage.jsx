@@ -3,10 +3,11 @@ import CreateItem from "../../Components/CreateItem/CreateItem";
 import { useEffect, useRef, useState } from "react";
 import toggle from "../../Utils/toggle";
 import ContainerList from "../../Components/ContainerList/ContainerList";
-import ListItem from "../../Components/ListItem";
+import ListItem from "../../Components/ListItem/ListItem";
 import EditItem from "../../Components/EditItem/EditItem";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAnimateButtons } from "../useAnimateButtons";
+import removeZeros from "../../Utils/removeZeros";
 
 function ShowSavePage() {
   const stateItemsInicial = {
@@ -42,6 +43,7 @@ function ShowSavePage() {
       cost_by_unit: 0,
       price_by_unit: 0,
       utility: 0,
+      sale_price: 0,
     },
   };
 
@@ -155,19 +157,21 @@ function ShowSavePage() {
     }
   }
 
-  function calculateCost(e) {
-    if (e.target.value == "") {
-      if (items.results.cost_by_unit != e.target.value) {
+  function calculateCost() {
+    const value = inputNProducts.current.value;
+
+    if (value == "" || value == 0) {
+      if (items.results.cost_by_unit != value) {
         const newItems = { ...items };
         newItems.results.cost_by_unit = 0;
-        return setItems(newItems);
+        setItems(newItems);
       }
-    } else if (items.results.total && e.target.value) {
-      const total = items.results.total / Number(e.target.value);
+    } else if (items.results.total && value) {
+      const total = removeZeros(items.results.total / Number(value)); //
       if (items.results.cost_by_unit != total) {
         const newItems = { ...items };
         newItems.results.cost_by_unit = total;
-        newItems.results.units_produced = Number(e.target.value);
+        newItems.results.units_produced = Number(value);
         setItems(newItems);
       }
       return total;
@@ -186,6 +190,18 @@ function ShowSavePage() {
         const newItems = { ...items };
         newItems.results.utility = total;
         newItems.results.price_by_unit = parseInt(e.target.value);
+        setItems(newItems);
+      }
+      return total;
+    }
+  }
+
+  function calculateTotalUtil() {
+    if (items.results.utility && items.results.units_produced) {
+      const total = items.results.utility * items.results.units_produced;
+      if (items.results.total_utility != total) {
+        const newItems = { ...items };
+        newItems.results.total_utility = total;
         setItems(newItems);
       }
       return total;
@@ -245,6 +261,8 @@ function ShowSavePage() {
   }, []);
 
   useEffect(() => {
+    calculateTotalUtil();
+    calculateCost();
     localStorage.setItem("items", JSON.stringify(items));
   }, [items]);
 
@@ -367,18 +385,68 @@ function ShowSavePage() {
                 </tr>
                 <tr>
                   <td>
-                    <label htmlFor="num-products">Unidades producidas:</label>
+                    <label htmlFor="num-products">
+                      {" "}
+                      ¿Cuantas unidades salieron?
+                    </label>
                   </td>
                   <td>
+                    <button
+                      onClick={() => {
+                        if (inputNProducts.current.value > 0) {
+                          const newItems = { ...items };
+                          newItems.results.units_produced =
+                            parseInt(inputNProducts.current.value) - 1;
+                          setItems(newItems);
+                          calculateCost();
+                        } else {
+                          return;
+                        }
+                      }}
+                      className="w-8 mr-1 rounded-lg font-bold"
+                    >
+                      -
+                    </button>
+
                     <input
                       ref={inputNProducts}
                       id="num-products"
-                      className="w-full text-sm text-center text-black"
-                      type="number"
+                      className="w-10 text-sm text-center  text-black"
                       placeholder="Num. productos"
-                      onChange={calculateCost}
+                      onClick={(e) => {
+                        const length = e.target.value.length;
+                        e.target.setSelectionRange(length, length);
+                      }}
+                      onChange={(e) => {
+                        e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                        calculateCost();
+                        console.log(e);
+                        const newItems = { ...items };
+                        newItems.results.units_produced = e.target.value;
+                        setItems(newItems);
+                      }}
                       value={items.results.units_produced}
                     />
+                    <button
+                      onClick={() => {
+                        if (inputNProducts.current.value == 0) {
+                          const newItems = { ...items };
+                          newItems.results.units_produced =
+                            newItems.results.units_produced + 1;
+                          setItems(newItems);
+                          calculateCost();
+                        } else {
+                          const newItems = { ...items };
+                          newItems.results.units_produced =
+                            parseInt(inputNProducts.current.value) + 1;
+                          setItems(newItems);
+                          calculateCost();
+                        }
+                      }}
+                      className="w-8 ml-1 rounded-lg font-bold"
+                    >
+                      +
+                    </button>
                   </td>
                 </tr>
                 <tr>
@@ -387,23 +455,37 @@ function ShowSavePage() {
                 </tr>
                 <tr>
                   <td>
-                    <label htmlFor="price">Precio por unidad:</label>
+                    <label htmlFor="price">¿Que precio pondras?</label>
                   </td>
                   <td>
                     <input
                       ref={inputPrice}
                       id="price"
                       className="w-full text-sm text-center text-black"
-                      type="number"
                       placeholder="Precio de venta"
-                      onChange={calculateUtil}
-                      value={items.results.price_by_unit}
+                      onClick={(e) => {
+                        const length = e.target.value.length;
+                        e.target.setSelectionRange(length, length);
+                      }}
+                      onChange={(e) => {
+                        e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                        calculateUtil(e);
+                        console.log(e);
+                        const newItems = { ...items };
+                        newItems.results.sale_price = e.target.value;
+                        setItems(newItems);
+                      }}
+                      value={items.results.sale_price}
                     />
                   </td>
                 </tr>
                 <tr>
                   <td>Utilidad por unidad:</td>
                   <td>$ {items.results.utility | 0}</td>
+                </tr>
+                <tr>
+                  <td>Utilidad total:</td>
+                  <td>$ {items.results.total_utility | 0}</td>
                 </tr>
               </tbody>
             </table>

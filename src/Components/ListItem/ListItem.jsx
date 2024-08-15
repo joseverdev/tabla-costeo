@@ -2,6 +2,7 @@ import EditIcon from "../../Icons/EditIcon";
 import TrashIcon from "../../Icons/TrashIcon";
 import "./IngredientItem.css";
 import toggle from "../../Utils/toggle";
+import removeZeros from "../../Utils/removeZeros";
 
 export default function ListItem({
   item,
@@ -9,18 +10,6 @@ export default function ListItem({
   deleteItemLocalStorage,
   titleList,
 }) {
-  function removeZeros(num) {
-    if (!num) {
-      return "no hay numero";
-    } else {
-      const number = Number(num);
-      const numberFormat = number.toFixed(2);
-      const newRes = parseFloat(numberFormat);
-
-      return newRes;
-    }
-  }
-
   return (
     <article className="border-blue p-4 rounded-lg item-container mb-4">
       <h3 className="p-1 title">{item ? item.nombre : "Sin titulo"}</h3>

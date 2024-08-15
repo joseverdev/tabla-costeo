@@ -71,12 +71,12 @@ function SaveListPage() {
     console.log("delete");
 
     const $btn = e.currentTarget;
-    $btn.classList.add("delete-confirmation-btn");
-    $btn.classList.add("bg-rose-500");
+    $btn.classList.add("delete-confirmation-btn-animation");
+    // $btn.classList.add("bg-rose-500");
     $btn.addEventListener(
       "transitionend",
       () => {
-        $btn.classList.remove("delete-confirmation-btn");
+        $btn.classList.remove("delete-confirmation-btn-animation");
 
         deleteItemFromLocalStorage(item);
       },
@@ -113,7 +113,7 @@ function SaveListPage() {
                 </button>
                 <button
                   onClick={(e) => deleteBtn(e, itemToDelete)}
-                  className="bg-rose-700 border-none rounded-md px-4 py-1"
+                  className="delete-confirmation-btn border-none rounded-md px-4 py-1"
                 >
                   Eliminar
                 </button>
