@@ -5,7 +5,6 @@ import ArrowRight from "../../Icons/ArrowRight";
 import "./SaveList.css";
 import { useNavigate } from "react-router-dom";
 import TrashIcon from "../../Icons/TrashIcon";
-import { useAnimateButtons } from "../useAnimateButtons";
 
 function SaveListPage() {
   const navigate = useNavigate();
@@ -14,22 +13,14 @@ function SaveListPage() {
   const [itemToDelete, setItemToDelete] = useState("");
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  const { navigateToView } = useAnimateButtons();
 
   function toProduct(e, item) {
     e.preventDefault();
     const $item = e.currentTarget.parentElement;
     $item.classList.add("button-animation");
-    $item.addEventListener(
-      "transitionend",
-      () => {
-        $item.classList.remove("button-animation");
-        navigate("/show-save", {
-          state: { item },
-        });
-      },
-      { once: true }
-    );
+    navigate("/show-test", {
+      state: { name: item.name },
+    });
   }
 
   function showDeleteConfirmation(item) {
@@ -56,15 +47,8 @@ function SaveListPage() {
   function cancelBtn(e) {
     const $btn = e.currentTarget;
     $btn.classList.add("cancel-btn");
+    setShowConfirmation(false);
 
-    $btn.addEventListener(
-      "transitionend",
-      () => {
-        $btn.classList.remove("cancel-btn");
-        setShowConfirmation(false);
-      },
-      { once: true }
-    );
   }
 
   function deleteBtn(e, item) {
@@ -72,16 +56,8 @@ function SaveListPage() {
 
     const $btn = e.currentTarget;
     $btn.classList.add("delete-confirmation-btn-animation");
-    // $btn.classList.add("bg-rose-500");
-    $btn.addEventListener(
-      "transitionend",
-      () => {
-        $btn.classList.remove("delete-confirmation-btn-animation");
 
-        deleteItemFromLocalStorage(item);
-      },
-      { once: true }
-    );
+    deleteItemFromLocalStorage(item);
   }
 
   useEffect(() => {
@@ -107,13 +83,13 @@ function SaveListPage() {
               <div className="button-container flex justify-center gap-4">
                 <button
                   onClick={(e) => cancelBtn(e)}
-                  className=" rounded-md px-4 py-1 "
+                  className="main-button rounded-md px-4 py-1 "
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={(e) => deleteBtn(e, itemToDelete)}
-                  className="delete-confirmation-btn border-none rounded-md px-4 py-1"
+                  className="delete-confirmation-btn  border-none rounded-md px-4 py-1"
                 >
                   Eliminar
                 </button>
@@ -122,31 +98,38 @@ function SaveListPage() {
           </section>
         )}
 
-        <section className="saveList-container flex-col gap-4 w-80 m-auto">
+        <section className="saveList-container flex-col gap-4 w-full m-auto">
           <h2 className="text-2xl text-center font-medium py-4">
             Lista de Costeos Guardados
           </h2>
-          <ul className="w-full divide-y divide-slate-700 list-container rounded-md py-4">
+          <ul className="w-full divide-y divide-slate-700 list-container rounded-md py-4 ">
             {data?.length > 0 ? (
               data.map((item) => (
                 <li
-                  className="main-button p-4 flex gap-10 text-left"
+                  className=" hover:cursor-pointer  flex text-left"
                   key={item.id}
                 >
-                  <button className="delete border-none">
+                  <button className="delete border-none hover:bg-red-50 w-20"
+                    onClick={() => showDeleteConfirmation(item)}
+
+                  >
                     <TrashIcon
+                    className="mx-auto"
                       fill="#e63946"
-                      onClick={() => showDeleteConfirmation(item)}
                     />
                   </button>
-
-                  <a
-                    className=" flex  items-center grow"
+                  <button
                     onClick={(e) => toProduct(e, item)}
+                    className="main-button border-none w-full py-4 px-6"
                   >
-                    <p className="">{item.name || "sin titulo"}</p>
-                    <ArrowRight fill="var(--blue)" className="ml-auto w-12" />
-                  </a>
+
+                    <a
+                      className=" flex  items-center grow"
+                    >
+                      <p className="">{item.name || "sin titulo"}</p>
+                      <ArrowRight fill="var(--blue)" className="ml-auto w-12" />
+                    </a>
+                  </button>
                 </li>
               ))
             ) : (
@@ -156,7 +139,7 @@ function SaveListPage() {
           <button
             type="button"
             className="main-button outline-blue-500 w-16  flex justify-center py-2 border  rounded-l-md self-start"
-            onClick={(e) => navigateToView(e, "/")}
+            onClick={() => { window.location.hash = "#/home" }}
           >
             <ArrowRight left={"true"} fill="#00adb5" />
           </button>

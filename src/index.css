@@ -15,6 +15,20 @@ html{
   font-family: "lato", sans-serif;
 }
 
+body{
+  background-color: var(--black);
+  color: var(--white);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+
 .border-blue{
   border:solid 1px var(--blue);
 }
@@ -36,18 +50,29 @@ html{
   display: none;
 }
 .center-container{
+  margin: auto;
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 90%;
+  max-width: 480px;
 }
 
 .main-button{
   transition: all .2s ease; 
+}
+.main-button:hover{
+  background-color: var(--blue-light);
+  color: var(--black);
+}
+.main-button:hover svg{
+  fill: var(--black);
 }
 
 .button-animation {
@@ -59,16 +84,7 @@ html{
   background-color: var(--blue-light);
 }
 
-.success-msg{
-  position: fixed;
-  display: none;
-  z-index: 100;
-  right: 0;
-  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
-}
-.success-msg-animation {
-  display: block;
-}
+
 
 .exit-bnt-animation {
   background-color: rgb(244 63 94);

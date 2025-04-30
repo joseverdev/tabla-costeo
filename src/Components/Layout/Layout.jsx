@@ -3,11 +3,13 @@ import "./Layout.css";
 export default function Layout({ children, paddingBottom }) {
   return (
     <main
-      className={`text-center p-4 min-h-screen dark relative ${
-        paddingBottom ? "" : "pb-12"
-      }`}
+      className={`text-center center-container p-4 min-h-screen dark relative ${paddingBottom ? "" : "pb-12"
+        }`}
     >
-      {children}
+      <div className="overflow-y-auto scrollbar-hide mt-8">
+        {children}
+
+      </div>
     </main>
   );
 }

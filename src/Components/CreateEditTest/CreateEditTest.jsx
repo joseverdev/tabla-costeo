@@ -8,8 +8,12 @@ import EditItem from "../../Components/EditItem/EditItem";
 import { useLocation, useNavigate } from "react-router-dom";
 import removeZeros from "../../Utils/removeZeros";
 
-function ShowSavePage() {
+function CreateEditTest({ name, backPath }) {
+
+
+
   const stateItemsInicial = {
+    name: name || 'Escribe el nombre de tu receta',
     ingredients: [
       /*  {
         nombre: "Azucar",
@@ -43,30 +47,23 @@ function ShowSavePage() {
       price_by_unit: 0,
       utility: 0,
       sale_price: 0,
+      total_utility: 0,
     },
   };
 
-  const [items, setItems] = useState(stateItemsInicial);
+  const [item, setItem] = useState(stateItemsInicial);
+  const [actualRecipe, setActualRecipe] = useState("");
+
   const [title, setTitle] = useState("");
   const [itemToEdit, setItemToEdit] = useState(null);
-  // const [itemSave, setItemSave] = useState("");
+
   const inputNProducts = useRef();
   const inputPrice = useRef();
 
-  const location = useLocation();
-  let {
-    state: { item },
-  } = location;
-  if (!item) {
-    console.log("item no esta definido");
-  }
-  const titleText = item.name || "Sin titulo";
-
   const navigate = useNavigate();
 
-
   function deleteIngredientLocalStorage(nombre) {
-    const newItems = { ...items };
+    const newItems = { ...item };
     newItems.ingredients = newItems.ingredients.filter(
       (item) => item.nombre !== nombre
     );
@@ -76,10 +73,10 @@ function ShowSavePage() {
     inputNProducts.current.value = 0;
     inputPrice.current.value = 0;
 
-    setItems(newItems);
+    setItem(newItems);
   }
   function deletePackageLocalStorage(nombre) {
-    const newItems = { ...items };
+    const newItems = { ...item };
     newItems.packages = newItems.packages.filter(
       (item) => item.nombre !== nombre
     );
@@ -87,69 +84,69 @@ function ShowSavePage() {
     newItems.results.utility = 0;
     inputNProducts.current.value = 0;
     inputPrice.current.value = 0;
-    setItems(newItems);
+    setItem(newItems);
   }
 
   const sumAllIngredients = () => {
-    const total = items.ingredients.reduce(
+    const total = item.ingredients.reduce(
       (acc, cur) => Number(acc) + Number(cur.valor_total),
       0
     );
 
-    if (items.results.ingredients_cost != total) {
-      const newItems = { ...items };
+    if (item.results.ingredients_cost != total) {
+      const newItems = { ...item };
       newItems.results.ingredients_cost = total;
-      setItems(newItems);
+      setItem(newItems);
     }
 
     return total;
   };
 
   const sumAllPackages = () => {
-    const total = items.packages.reduce(
+    const total = item.packages.reduce(
       (acc, cur) => Number(acc) + Number(cur.valor_total),
       0
     );
 
-    if (items.results.packages_cost != total) {
-      const newItems = { ...items };
+    if (item.results.packages_cost != total) {
+      const newItems = { ...item };
       newItems.results.packages_cost = total;
-      setItems(newItems);
+      setItem(newItems);
     }
 
     return total;
   };
 
   function sumInputs() {
-    const total = items.results.ingredients_cost + items.results.packages_cost;
+    const total = item.results.ingredients_cost + item.results.packages_cost;
 
-    if (items.results.total_inputs != total) {
-      const newItems = { ...items };
+    if (item.results.total_inputs != total) {
+      const newItems = { ...item };
       newItems.results.total_inputs = total;
-      setItems(newItems);
+      setItem(newItems);
     }
     return total;
   }
 
   function sumWorkCost() {
-    if (items.results.total_inputs > 0) {
-      const total = (items.results.total_inputs * 60) / 100;
-      if (items.results.work_cost != total) {
-        const newItems = { ...items };
+    if (item.results.total_inputs > 0) {
+      const total = (item.results.total_inputs * 60) / 100;
+      if (item.results.work_cost != total) {
+        const newItems = { ...item };
         newItems.results.work_cost = total;
-        setItems(newItems);
+        setItem(newItems);
       }
       return total;
     }
   }
 
   function sumTotal() {
-    if (items.results.total_inputs && items.results.work_cost) {
-      const total = items.results.total_inputs + items.results.work_cost;
-      if (items.results.total != total) {
-        const newItems = { ...items };
+    if (item.results.total_inputs && item.results.work_cost) {
+      const total = item.results.total_inputs + item.results.work_cost;
+      if (item.results.total != total) {
+        const newItems = { ...item };
         newItems.results.total = total;
-        setItems(newItems);
+        setItem(newItems);
       }
       return total;
     }
@@ -159,48 +156,48 @@ function ShowSavePage() {
     const value = inputNProducts.current.value;
 
     if (value == "" || value == 0) {
-      if (items.results.cost_by_unit != value) {
-        const newItems = { ...items };
+      if (item.results.cost_by_unit != value) {
+        const newItems = { ...item };
         newItems.results.cost_by_unit = 0;
-        setItems(newItems);
+        setItem(newItems);
       }
-    } else if (items.results.total && value) {
-      const total = removeZeros(items.results.total / Number(value)); //
-      if (items.results.cost_by_unit != total) {
-        const newItems = { ...items };
+    } else if (item.results.total && value) {
+      const total = removeZeros(item.results.total / Number(value)); //
+      if (item.results.cost_by_unit != total) {
+        const newItems = { ...item };
         newItems.results.cost_by_unit = total;
         newItems.results.units_produced = Number(value);
-        setItems(newItems);
+        setItem(newItems);
       }
       return total;
     }
   }
   function calculateUtil(e) {
     if (e.target.value == "") {
-      if (items.results.utility != e.target.value) {
-        const newItems = { ...items };
+      if (item.results.utility != e.target.value) {
+        const newItems = { ...item };
         newItems.results.utility = e.target.value;
-        return setItems(newItems);
+        return setItem(newItems);
       }
-    } else if (items.results.cost_by_unit && e.target.value) {
-      const total = parseInt(e.target.value) - items.results.cost_by_unit;
-      if (items.results.utility != total) {
-        const newItems = { ...items };
+    } else if (item.results.cost_by_unit && e.target.value) {
+      const total = parseInt(e.target.value) - item.results.cost_by_unit;
+      if (item.results.utility != total) {
+        const newItems = { ...item };
         newItems.results.utility = total;
         newItems.results.price_by_unit = parseInt(e.target.value);
-        setItems(newItems);
+        setItem(newItems);
       }
       return total;
     }
   }
 
   function calculateTotalUtil() {
-    if (items.results.utility && items.results.units_produced) {
-      const total = items.results.utility * items.results.units_produced;
-      if (items.results.total_utility != total) {
-        const newItems = { ...items };
+    if (item.results.utility && item.results.units_produced) {
+      const total = item.results.utility * item.results.units_produced;
+      if (item.results.total_utility != total) {
+        const newItems = { ...item };
         newItems.results.total_utility = total;
-        setItems(newItems);
+        setItem(newItems);
       }
       return total;
     }
@@ -209,72 +206,141 @@ function ShowSavePage() {
   async function save() {
     try {
       let list = await localStorage.getItem("listSave");
+
       if (!list) {
         localStorage.setItem("listSave", JSON.stringify([]));
         list = [];
       }
-
       const parsedList = JSON.parse(list);
-
-      const itemIndex = parsedList.findIndex(
-        (itemSave) => itemSave.id === item.id
+      const itemExist = parsedList.findIndex(
+        (itemList) => itemList.name === item.name
       );
 
-      if (itemIndex !== -1) {
-        parsedList[itemIndex] = {
-          ...parsedList[itemIndex],
-          ...items,
-        };
+      const $successMsg = document.getElementById("success-msg");
 
-        localStorage.setItem("listSave", JSON.stringify(parsedList));
+      if (actualRecipe === item.name) {
+        console.log("el item es igual al actual item, puede ser guardado");
+        // console.log({ parsedList });
+        item.id = crypto.randomUUID();
+
+
+        console.log(item)
+        
+        // parsedList[item] = { ...parsedList[item], ...item };
+        parsedList.find((el) => {
+          if (el.name === item.name) {
+            el.ingredients = item.ingredients;
+            el.packages = item.packages;
+            el.results = item.results;
+          }
+        });
+        
+        $successMsg.classList.toggle("inactive");
+        setTimeout(() => {
+          $successMsg.classList.toggle("inactive");
+        }, 1000);
+      } else if (itemExist === -1) {
+        // console.log({ parsedList });
+        console.log("el item no existe, puede ser guardado");
+        item.id = crypto.randomUUID();
+
+
+        // console.log(item)
+        parsedList.push(item);
+
+        setActualRecipe(item.name);
+
+        $successMsg.classList.toggle("inactive");
+        setTimeout(() => {
+          $successMsg.classList.toggle("inactive");
+        }, 1000);
       } else {
-        console.log("el item no existe");
+        console.log("el item existe, NO puede ser guardado");
+        // parsedList[itemExist] = {
+        //   ...parsedList[itemExist],
+        //   ...item,
+        // };
+        console.log(parsedList);
+        document.getElementById("error-msg").classList.toggle("inactive");
+        setTimeout(() => {
+          document.getElementById("error-msg").classList.toggle("inactive");
+
+        }, 3000)
+
       }
 
-      const $successMsg = document.querySelector(".success-msg");
-      $successMsg.classList.add("success-msg-animation");
+      localStorage.setItem("listSave", JSON.stringify(parsedList));
 
-      setTimeout(() => {
-        $successMsg.classList.remove("success-msg-animation");
-      }, 1000);
     } catch (err) {
-      console.error("hubo un error en useLocalStorage ", err);
+      console.error("hubo un error en useLocalStorage CreateEditTest.jsx", err);
     }
   }
 
+
   useEffect(() => {
-    let itemsLS = localStorage.getItem("listSave");
 
-    if (!itemsLS) {
-      console.log("Error: no se encuentra informacion en el LocalStorage");
+    let listLs = localStorage.getItem("listSave");
+    if (!listLs) {
+      return console.log("no hay lista en  CreateEditTest.jsx useEffect");
     }
-    const parseItems = JSON.parse(itemsLS);
+    const parsedList = JSON.parse(listLs);
 
-    console.log(parseItems);
+    const itemsFromList = parsedList.find(
+      (itemList) => itemList.name === stateItemsInicial.name
+    );
 
-    const itemIndex = parseItems.findIndex((itemLS) => itemLS.id === item.id);
-
-    console.log(parseItems[itemIndex]);
-    setItems(parseItems[itemIndex]);
+    if (itemsFromList) {
+      return setItem(itemsFromList);
+    }
   }, []);
 
   useEffect(() => {
     calculateTotalUtil();
     calculateCost();
-    localStorage.setItem("items", JSON.stringify(items));
-  }, [items]);
+  }, [item]);
 
   return (
     <>
       <Layout>
-        <h2 className="text-2xl mt-2">{titleText}</h2>
+        <div className="flex gap-2 overflow-y-auto justify- px-4 w-full" >
+          <div className="w-full">
+            <h2 id="recipe-title" className="text-2xl">
+              {item.name}
+            </h2>
+            <input id="recipe-title-input" className="inactive text-[var(--black)] w-full p-2 px-4 outline-none" type="text" placeholder="Escribe el nombre de tu receta" />
+
+          </div>
+          <button
+            className="border-none outline-none"
+            onClick={(e) => {
+              const $input = document.getElementById("recipe-title-input");
+              document.getElementById('recipe-title').classList.toggle('inactive');
+              document.getElementById('icon-check').classList.toggle('inactive');
+              document.getElementById('icon-edit').classList.toggle('inactive');
+              $input.classList.toggle('inactive');
+              $input.focus();
+
+              setItem((prev) => {
+                return {
+                  ...prev,
+                  name: $input.value
+                }
+              })
+
+            }}
+          >
+            <svg id="icon-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+            <svg id="icon-edit" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inactive icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l5 5l10 -10" /></svg>
+          </button>
+
+        </div>
         <hr className="my-4 border-gray-700" />
         <button
           onClick={() => {
             toggle(".create-ingredient", "active");
             setTitle("Ingrediente");
           }}
-          className="add-button fixed bottom-4 right-1 border-blue px-4 py-2 rounded-full w-18 h-12 flex items-center"
+          className="add-button absolute  bottom-4 right-1 border-blue px-4 py-2 rounded-full w-18 h-12 flex item-center"
         >
           <p>Ingrediente</p>
           <span className="ml-1 font-black text-2xl">+</span>
@@ -284,40 +350,24 @@ function ShowSavePage() {
             toggle(".create-ingredient", "active");
             setTitle("Empaque");
           }}
-          className="add-button fixed bottom-4 left-1 border-blue px-4 py-2 rounded-full w-18 h-12 flex items-center"
+          className="add-button absolute bottom-4  left-1 border-blue px-4 py-2 rounded-full w-18 h-12 flex item-center"
         >
           Empaque <span className="ml-1 font-black text-2xl">+</span>
         </button>
         <button
-          onClick={(e) => {
-            const $exitBtn = e.currentTarget;
-
-            $exitBtn.classList.add("exit-bnt-animation");
-
-            localStorage.setItem(
-              "items",
-              JSON.stringify(stateItemsInicial)
-            );
-            setItems(stateItemsInicial);
-
-            navigate("/save-list");
-
-            
-          }}
-          className="bg-rose-600 fixed  px-3 py-1 left-0 rounded-r-lg border-none"
+          onClick={() => (navigate(backPath || "/home"))}
+          className="bg-rose-600 absolute left-0 top-56 px-3 py-1  rounded-r-lg border-none"
         >
           Volver
         </button>
-        {
-          <output className="success-msg bg-green-700 px-2 py-1 rounded-md rounded-br-none rounded-tr-none">
-            Guardado con exito !
-          </output>
-        }
+
+
+
         <CreateItem
           title={title}
           setTitle={setTitle}
-          items={items}
-          setItems={setItems}
+          item={item}
+          setItem={setItem}
           inputNProducts={inputNProducts}
           inputPrice={inputPrice}
         />
@@ -325,11 +375,11 @@ function ShowSavePage() {
           itemToEdit={itemToEdit}
           title={title}
           setTitle={setTitle}
-          items={items}
-          setItems={setItems}
+          item={item}
+          setItem={setItem}
         />
         <ContainerList title="Ingredientes">
-          {items.ingredients?.map((ingredient) => (
+          {item.ingredients?.map((ingredient) => (
             <ListItem
               setItemToEdit={setItemToEdit}
               key={ingredient.id}
@@ -340,7 +390,7 @@ function ShowSavePage() {
           ))}
         </ContainerList>
         <ContainerList title="Empaques">
-          {items.packages?.map((pack) => (
+          {item.packages?.map((pack) => (
             <ListItem
               setItemToEdit={setItemToEdit}
               key={pack.id}
@@ -377,18 +427,17 @@ function ShowSavePage() {
                 <tr>
                   <td>
                     <label htmlFor="num-products">
-                      {" "}
                       ¿Cuantas unidades salieron?
                     </label>
                   </td>
-                  <td>
+                  <td className="">
                     <button
                       onClick={() => {
                         if (inputNProducts.current.value > 0) {
-                          const newItems = { ...items };
+                          const newItems = { ...item };
                           newItems.results.units_produced =
                             parseInt(inputNProducts.current.value) - 1;
-                          setItems(newItems);
+                          setItem(newItems);
                           calculateCost();
                         } else {
                           return;
@@ -412,25 +461,25 @@ function ShowSavePage() {
                         e.target.value = e.target.value.replace(/[^0-9]/g, "");
                         calculateCost();
                         console.log(e);
-                        const newItems = { ...items };
+                        const newItems = { ...item };
                         newItems.results.units_produced = e.target.value;
-                        setItems(newItems);
+                        setItem(newItems);
                       }}
-                      value={items.results.units_produced}
+                      value={item.results.units_produced}
                     />
                     <button
                       onClick={() => {
                         if (inputNProducts.current.value == 0) {
-                          const newItems = { ...items };
+                          const newItems = { ...item };
                           newItems.results.units_produced =
                             newItems.results.units_produced + 1;
-                          setItems(newItems);
+                          setItem(newItems);
                           calculateCost();
                         } else {
-                          const newItems = { ...items };
+                          const newItems = { ...item };
                           newItems.results.units_produced =
                             parseInt(inputNProducts.current.value) + 1;
-                          setItems(newItems);
+                          setItem(newItems);
                           calculateCost();
                         }
                       }}
@@ -442,7 +491,7 @@ function ShowSavePage() {
                 </tr>
                 <tr>
                   <td>Costo por unidad:</td>
-                  <td>${items.results.cost_by_unit}</td>
+                  <td>${item.results.cost_by_unit}</td>
                 </tr>
                 <tr>
                   <td>
@@ -453,47 +502,53 @@ function ShowSavePage() {
                       ref={inputPrice}
                       id="price"
                       className="w-full text-sm text-center text-black"
+                      type="number"
                       placeholder="Precio de venta"
-                      onClick={(e) => {
-                        const length = e.target.value.length;
-                        e.target.setSelectionRange(length, length);
-                      }}
                       onChange={(e) => {
-                        e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                        const newItems = { ...item };
+                        newItems.results.sale_price = parseInt(e.target.value);
+                        setItem(newItems);
+
                         calculateUtil(e);
-                        console.log(e);
-                        const newItems = { ...items };
-                        newItems.results.sale_price = e.target.value;
-                        setItems(newItems);
                       }}
-                      value={items.results.sale_price}
                     />
                   </td>
                 </tr>
                 <tr>
                   <td>Utilidad por unidad:</td>
-                  <td>$ {items.results.utility | 0}</td>
+                  <td>$ {item.results.utility | 0}</td>
                 </tr>
                 <tr>
-                  <td>Utilidad total:</td>
-                  <td>$ {items.results.total_utility | 0}</td>
+                  <td>Utilidad total: </td>
+                  <td>$ {item.results.total_utility | 0}</td>
                 </tr>
               </tbody>
             </table>
           </article>
           <button
-            id="save-btn"
             onClick={() => {
               save();
             }}
+            id="save-btn"
             className="main-button add-button border-blue px-4 py-2 rounded-full"
           >
             Guardar Costeo
           </button>
         </ContainerList>
-      </Layout>
+        {
+          <output id="success-msg" className="inactive bg-green-700 px-2 py-1 absolute  bottom-12 -translate-x-1/2 rounded-xl ">
+            Guardado con exito !
+          </output>
+
+        }
+        {
+          <output id="error-msg" className="absolute  bottom-12 -translate-x-1/2 rounded-xl   bg-red-700 px-2 py-1 inactive">
+            Ya existe un producto con ese nombre
+          </output>
+        }
+      </Layout >
     </>
   );
 }
 
-export { ShowSavePage };
+export { CreateEditTest };

@@ -6,7 +6,6 @@ import ContainerList from "../../Components/ContainerList/ContainerList";
 import ListItem from "../../Components/ListItem/ListItem";
 import EditItem from "../../Components/EditItem/EditItem";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAnimateButtons } from "../useAnimateButtons";
 import removeZeros from "../../Utils/removeZeros";
 
 function CreatePage() {
@@ -53,8 +52,6 @@ function CreatePage() {
       total_utility: 0,
     },
   };
-
-  const { animateSaveButton } = useAnimateButtons();
 
   const [items, setItems] = useState(stateItemsInicial);
 
@@ -273,6 +270,7 @@ function CreatePage() {
   return (
     <>
       <Layout>
+
         <h2 className="text-2xl mt-2">{nameProduct}</h2>
         <hr className="my-4 border-gray-700" />
         <button
@@ -280,7 +278,7 @@ function CreatePage() {
             toggle(".create-ingredient", "active");
             setTitle("Ingrediente");
           }}
-          className="add-button fixed bottom-4 right-1 border-blue px-4 py-2 rounded-full w-18 h-12 flex items-center"
+          className="add-button absolute md:bottom-32 bottom-4 right-1 border-blue px-4 py-2 rounded-full w-18 h-12 flex items-center"
         >
           <p>Ingrediente</p>
           <span className="ml-1 font-black text-2xl">+</span>
@@ -290,32 +288,13 @@ function CreatePage() {
             toggle(".create-ingredient", "active");
             setTitle("Empaque");
           }}
-          className="add-button fixed bottom-4 left-1 border-blue px-4 py-2 rounded-full w-18 h-12 flex items-center"
+          className="add-button absolute bottom-4 md:bottom-32 left-1 border-blue px-4 py-2 rounded-full w-18 h-12 flex items-center"
         >
           Empaque <span className="ml-1 font-black text-2xl">+</span>
         </button>
         <button
-          onClick={(e) => {
-            const $exitBtn = e.currentTarget;
-
-            $exitBtn.classList.add("exit-bnt-animation");
-
-            $exitBtn.addEventListener(
-              "transitionend",
-              () => {
-                $exitBtn.classList.remove("exit-bnt-animation");
-                localStorage.setItem(
-                  "items",
-                  JSON.stringify(stateItemsInicial)
-                );
-                setItems(stateItemsInicial);
-
-                navigate("/home");
-              },
-              { once: false }
-            );
-          }}
-          className="bg-rose-600 fixed  px-3 py-1 left-0 rounded-r-lg border-none"
+          onClick={() => (navigate("/home"))}
+          className="bg-rose-600 absolute left-0 top-44 px-3 py-1  rounded-r-lg border-none"
         >
           Volver
         </button>
@@ -490,7 +469,6 @@ function CreatePage() {
           </article>
           <button
             onClick={() => {
-              animateSaveButton();
               save();
             }}
             id="save-btn"
@@ -499,7 +477,7 @@ function CreatePage() {
             Guardar Costeo
           </button>
         </ContainerList>
-      </Layout>
+      </Layout >
     </>
   );
 }

@@ -3,8 +3,8 @@ import toggle from "../../Utils/toggle";
 import "./CreateItem.css";
 
 export default function CreateItem({
-  items,
-  setItems,
+  item,
+  setItem,
   title,
   inputNProducts,
   inputPrice,
@@ -22,11 +22,12 @@ export default function CreateItem({
       Number(data.cantidad_usada) * Number(data.valor_gr_ml)
     ).toFixed(2);
     data.id = crypto.randomUUID();
+    
     if (title === "Ingrediente") {
       data.type = "Ingrediente";
 
-      const alreadyItem = items.ingredients.find(
-        (item) => item.nombre === data.nombre
+      const alreadyItem = item.ingredients.find(
+        (el) => el.nombre === data.nombre
       );
 
       if (alreadyItem) {
@@ -35,28 +36,28 @@ export default function CreateItem({
       toggle(".create-ingredient", "active");
       pError.current.classList.add("inactive");
 
-      const newItems = { ...items };
+      const newItems = { ...item };
       newItems.ingredients = [...newItems.ingredients, data];
       newItems.results.cost_by_unit = 0;
       newItems.results.utility = 0;
-      setItems(newItems);
+      setItem(newItems);
     } else if (title === "Empaque") {
       data.type = "Empaque";
 
-      const alreadyItem = items.packages.find(
-        (item) => item.nombre === data.nombre
+      const alreadyItem = item.packages.find(
+        (el) => el.nombre === data.nombre
       );
 
       if (alreadyItem) {
         return pError.current.classList.remove("inactive");
       }
 
-      const newItems = { ...items };
-      newItems.packages = [...items.packages, data];
+      const newItems = { ...item };
+      newItems.packages = [...item.packages, data];
       newItems.results.cost_by_unit = 0;
       newItems.results.utility = 0;
 
-      setItems(newItems);
+      setItem(newItems);
       toggle(".create-ingredient", "active");
       pError.current.classList.add("inactive");
     }
@@ -75,7 +76,7 @@ export default function CreateItem({
   }
 
   return (
-    <div className="create-ingredient ">
+    <div className="create-ingredient">
       <form
         onSubmit={(e) => {
           saveData(e);

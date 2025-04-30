@@ -43,6 +43,10 @@ button{
   background-color: rgb(187, 23, 64);
   transition: all 0.2s ease;
 }
+.delete-confirmation-btn:hover{
+  background-color: rgb(253, 0, 63);
+  transition: all 0.2s ease;
+}
 .delete-confirmation-btn-animation{
   background-color: rgb(233, 71, 111);
   transition: all 0.2s ease;

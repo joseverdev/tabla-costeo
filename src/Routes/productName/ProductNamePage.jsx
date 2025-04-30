@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Layout from "../../Components/Layout/Layout";
 import ArrowRight from "../../Icons/ArrowRight";
 import { useNavigate } from "react-router-dom";
-import { useAnimateButtons } from "../useAnimateButtons";
 
 function ProductNamePage() {
   const [errorMsg, setErrorMsg] = useState("Error");
@@ -54,7 +53,7 @@ function ProductNamePage() {
 
   const navigate = useNavigate();
 
-  const { navigateToView } = useAnimateButtons();
+  // const { navigateToView } = useAnimateButtons();
 
   return (
     <>
@@ -65,17 +64,17 @@ function ProductNamePage() {
             className="w-72 flex flex-col place-content-center"
           >
             <label className="text-2xl mb-8" htmlFor="nameProduct">
-              Nombre del producto
+              Nombre de tu receta
             </label>
             <div className="mb-8">
               <input
-                className="outline-green-500 px-4 text-sm py-8 rounded-md text-black  w-full "
+                className="outline-green-500 px-4 text-sm py-6 rounded-md text-black  w-full "
                 id="nameProduct"
                 type="text"
-                placeholder="Escribe el nombre de tu producto o receta"
+                placeholder="Escribe el nombre de tu receta"
                 name="nameProduct"
               />
-              <p className="text-rose-400 font-bold error inactive">
+              <p className="text-rose-400 mt-4 font-bold error inactive">
                 {errorMsg}
               </p>
             </div>
@@ -84,7 +83,7 @@ function ProductNamePage() {
               <button
                 className="main-button outline-blue-500 self-end text-lg px-8 py-3 border rounded-l-lg"
                 type="button"
-                onClick={(e) => navigateToView(e, "/")}
+                onClick={()=> {window.location.hash = "#/home"}}
               >
                 <ArrowRight left={"true"} fill="#00adb5" />
               </button>
