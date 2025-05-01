@@ -54,7 +54,7 @@ function CreateEdit({ name, backPath }) {
   };
 
   const [item, setItem] = useState(stateItemsInicial);
-  const [actualRecipe, setActualRecipe] = useState("");
+  const [actualRecipe, setActualRecipe] = useState(name||null);
 
   const [title, setTitle] = useState("");
   const [itemToEdit, setItemToEdit] = useState(null);
@@ -224,13 +224,7 @@ function CreateEdit({ name, backPath }) {
 
       if (actualRecipe === item.name) {
         console.log("el item es igual al actual item, puede ser guardado");
-        // console.log({ parsedList });
         item.id = crypto.randomUUID();
-
-
-        console.log(item)
-
-        // parsedList[item] = { ...parsedList[item], ...item };
         parsedList.find((el) => {
           if (el.name === item.name) {
             el.ingredients = item.ingredients;
@@ -244,12 +238,9 @@ function CreateEdit({ name, backPath }) {
           $successMsg.classList.toggle("inactive");
         }, 1000);
       } else if (itemExist === -1) {
-        // console.log({ parsedList });
         console.log("el item no existe, puede ser guardado");
         item.id = crypto.randomUUID();
 
-
-        // console.log(item)
         parsedList.push(item);
 
         setActualRecipe(item.name);
@@ -260,11 +251,6 @@ function CreateEdit({ name, backPath }) {
         }, 1000);
       } else {
         console.log("el item existe, NO puede ser guardado");
-        // parsedList[itemExist] = {
-        //   ...parsedList[itemExist],
-        //   ...item,
-        // };
-        console.log(parsedList);
         document.getElementById("error-msg").classList.toggle("inactive");
         setTimeout(() => {
           document.getElementById("error-msg").classList.toggle("inactive");
