@@ -28,7 +28,7 @@ function HomePage() {
             <section>
               <button
                 className="main-button block border p-5 w-full rounded-lg mb-4 text-lg"
-                onClick={() => (window.location.hash = "#/create-test")}
+                onClick={() => (window.location.hash = "#/create")}
               >
                 Crear una nuevo costeo
               </button>

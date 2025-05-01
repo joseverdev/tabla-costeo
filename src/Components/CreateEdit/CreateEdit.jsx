@@ -1,14 +1,16 @@
-import Layout from "../../Components/Layout/Layout";
-import CreateItem from "../../Components/CreateItem/CreateItem";
+import Layout from "../Layout/Layout";
+import CreateItem from "../CreateItem/CreateItem";
 import { useEffect, useRef, useState } from "react";
 import toggle from "../../Utils/toggle";
-import ContainerList from "../../Components/ContainerList/ContainerList";
-import ListItem from "../../Components/ListItem/ListItem";
-import EditItem from "../../Components/EditItem/EditItem";
-import { useLocation, useNavigate } from "react-router-dom";
+import ContainerList from "../ContainerList/ContainerList";
+import ListItem from "../ListItem/ListItem";
+import EditItem from "../EditItem/EditItem";
+import { useNavigate } from "react-router-dom";
 import removeZeros from "../../Utils/removeZeros";
 
-function CreateEditTest({ name, backPath }) {
+import "./CreateEdit.css";
+
+function CreateEdit({ name, backPath }) {
 
 
 
@@ -56,6 +58,8 @@ function CreateEditTest({ name, backPath }) {
 
   const [title, setTitle] = useState("");
   const [itemToEdit, setItemToEdit] = useState(null);
+
+  const [showEditName, setShowEditName] = useState(false);
 
   const inputNProducts = useRef();
   const inputPrice = useRef();
@@ -225,7 +229,7 @@ function CreateEditTest({ name, backPath }) {
 
 
         console.log(item)
-        
+
         // parsedList[item] = { ...parsedList[item], ...item };
         parsedList.find((el) => {
           if (el.name === item.name) {
@@ -234,7 +238,7 @@ function CreateEditTest({ name, backPath }) {
             el.results = item.results;
           }
         });
-        
+
         $successMsg.classList.toggle("inactive");
         setTimeout(() => {
           $successMsg.classList.toggle("inactive");
@@ -272,7 +276,7 @@ function CreateEditTest({ name, backPath }) {
       localStorage.setItem("listSave", JSON.stringify(parsedList));
 
     } catch (err) {
-      console.error("hubo un error en useLocalStorage CreateEditTest.jsx", err);
+      console.error("hubo un error en useLocalStorage CreateEdit.jsx", err);
     }
   }
 
@@ -281,7 +285,7 @@ function CreateEditTest({ name, backPath }) {
 
     let listLs = localStorage.getItem("listSave");
     if (!listLs) {
-      return console.log("no hay lista en  CreateEditTest.jsx useEffect");
+      return console.log("no hay lista en  CreateEdit.jsx useEffect");
     }
     const parsedList = JSON.parse(listLs);
 
@@ -292,6 +296,24 @@ function CreateEditTest({ name, backPath }) {
     if (itemsFromList) {
       return setItem(itemsFromList);
     }
+
+    function handleClickOutside(e) {
+      const input = document.getElementById('recipe-title-input');
+      const editBtn = document.getElementById('edit-name-btn');
+  
+      if (!input || !editBtn) return;
+  
+      if (!input.contains(e.target) && !editBtn.contains(e.target)) {
+        setShowEditName(false);
+      }
+    }
+  
+    document.addEventListener('click', handleClickOutside);
+  
+    // Limpieza del listener al desmontar el componente
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
   }, []);
 
   useEffect(() => {
@@ -304,33 +326,51 @@ function CreateEditTest({ name, backPath }) {
       <Layout>
         <div className="flex gap-2 overflow-y-auto justify- px-4 w-full" >
           <div className="w-full">
-            <h2 id="recipe-title" className="text-2xl">
-              {item.name}
+            <h2 id="recipe-title" className={`${showEditName === true ? 'inactive' : ''} text-2xl`}>
+              {item.name || 'Escribe el nombre de tu receta'}
             </h2>
-            <input id="recipe-title-input" className="inactive text-[var(--black)] w-full p-2 px-4 outline-none" type="text" placeholder="Escribe el nombre de tu receta" />
+            <input id="recipe-title-input" className={`${showEditName === false ? 'inactive' : ''} text-[var(--black)] w-full p-2 px-4 outline-none`} type="text" placeholder="Escribe el nombre de tu receta" />
 
           </div>
           <button
+            id="edit-name-btn"
             className="border-none outline-none"
             onClick={(e) => {
+              setShowEditName(prev => !prev);
               const $input = document.getElementById("recipe-title-input");
-              document.getElementById('recipe-title').classList.toggle('inactive');
-              document.getElementById('icon-check').classList.toggle('inactive');
-              document.getElementById('icon-edit').classList.toggle('inactive');
-              $input.classList.toggle('inactive');
-              $input.focus();
 
-              setItem((prev) => {
-                return {
-                  ...prev,
-                  name: $input.value
-                }
-              })
+              // console.log($input);
+
+              if (!e.currentTarget.querySelector('#icon-edit').classList.contains('inactive')) {
+                console.log('click edit');
+                $input.classList.toggle('inactive');
+                $input.focus();
+              }
+              if (!e.currentTarget.querySelector('#icon-check').classList.contains('inactive')) {
+                console.log('click check');
+                console.log(
+                  $input.value
+                )
+                setItem((prev) => {
+                  return {
+                    ...prev,
+                    name: $input.value
+                  }
+                })
+
+              }
+
+
+              // document.getElementById('recipe-title').classList.toggle('inactive');
+              // document.getElementById('icon-check').classList.toggle('inactive');
+              // document.getElementById('icon-edit').classList.toggle('inactive');
+              // $input.classList.toggle('inactive');
+
 
             }}
           >
-            <svg id="icon-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-            <svg id="icon-edit" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inactive icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l5 5l10 -10" /></svg>
+            <svg id="icon-edit" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`${showEditName === true ? 'inactive' : ''} icon icon-tabler icons-tabler-outline icon-tabler-edit`}><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+            <svg id="icon-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`${showEditName === false ? 'inactive' : ''} icon icon-tabler icons-tabler-outline icon-tabler-check`}><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l5 5l10 -10" /></svg>
           </button>
 
         </div>
@@ -551,4 +591,4 @@ function CreateEditTest({ name, backPath }) {
   );
 }
 
-export { CreateEditTest };
+export { CreateEdit };

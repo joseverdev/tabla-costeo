@@ -1,8 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { CreateEditTest } from "../../Components/CreateEditTest/CreateEditTest";
+import { CreateEdit } from "../../Components/CreateEdit/CreateEdit";
 import { useEffect } from "react";
 
-function ShowTest(){
+function ShowPage(){
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -20,11 +20,11 @@ function ShowTest(){
       }
 
     return (
-        <CreateEditTest
+        <CreateEdit
             name={item.name}
             backPath='/save-list'
         />
     );
 }
 
-export { ShowTest };
+export { ShowPage };

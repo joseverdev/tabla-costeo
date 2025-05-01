@@ -18,7 +18,7 @@ function SaveListPage() {
     e.preventDefault();
     const $item = e.currentTarget.parentElement;
     $item.classList.add("button-animation");
-    navigate("/show-test", {
+    navigate("/show", {
       state: { name: item.name },
     });
   }

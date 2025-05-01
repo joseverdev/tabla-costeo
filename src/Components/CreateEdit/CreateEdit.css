@@ -1,0 +1,35 @@
+.create-ingredient,
+.edit-ingredient{
+  min-height: 100vh;
+  z-index: 250;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+  
+  transition: transform 0.3 ease;
+  transform: translate(0, -100%);
+
+}
+.create-form{
+  background-color: var(--black);
+  margin: 0;
+}
+.close-btn{
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border: solid 1px var(--black);
+  background-color: var(--gray);
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  color: var(--white);
+}
