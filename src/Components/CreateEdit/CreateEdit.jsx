@@ -282,7 +282,6 @@ function CreateEdit({ name, backPath }) {
 
 
   useEffect(() => {
-
     let listLs = localStorage.getItem("listSave");
     if (!listLs) {
       return console.log("no hay lista en  CreateEdit.jsx useEffect");
@@ -296,6 +295,10 @@ function CreateEdit({ name, backPath }) {
     if (itemsFromList) {
       return setItem(itemsFromList);
     }
+
+  }, []);
+
+  useEffect(()=> {
 
     function handleClickOutside(e) {
       const input = document.getElementById('recipe-title-input');
@@ -314,7 +317,7 @@ function CreateEdit({ name, backPath }) {
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  }, []);
+  },[setShowEditName])
 
   useEffect(() => {
     calculateTotalUtil();
@@ -339,8 +342,6 @@ function CreateEdit({ name, backPath }) {
               setShowEditName(prev => !prev);
               const $input = document.getElementById("recipe-title-input");
 
-              // console.log($input);
-
               if (!e.currentTarget.querySelector('#icon-edit').classList.contains('inactive')) {
                 console.log('click edit');
                 $input.classList.toggle('inactive');
@@ -359,13 +360,6 @@ function CreateEdit({ name, backPath }) {
                 })
 
               }
-
-
-              // document.getElementById('recipe-title').classList.toggle('inactive');
-              // document.getElementById('icon-check').classList.toggle('inactive');
-              // document.getElementById('icon-edit').classList.toggle('inactive');
-              // $input.classList.toggle('inactive');
-
 
             }}
           >
